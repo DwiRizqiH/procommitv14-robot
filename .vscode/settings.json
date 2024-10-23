@@ -1,0 +1,8 @@
+{
+    "code-runner.saveAllFilesBeforeRun": true,
+    "code-runner.customCommand": "C:/cvavr/BIN/cvavrcl.exe Program.prj -ba -rw",
+    "code-runner.executorMap": {
+        "c": "C:/cvavr/BIN/cvavrcl.exe Program.prj -ba -rw"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}

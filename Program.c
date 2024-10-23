@@ -1,0 +1,1206 @@
+/*****************************************************
+This program was produced by the
+CodeWizardAVR V2.05.3 Standard
+Automatic Program Generator
+� Copyright 1998-2011 Pavel Haiduc, HP InfoTech s.r.l.
+http://www.hpinfotech.com
+                                                                q
+Project : 
+Version : 
+Date    : 9/24/2024
+Author  : Aak
+Company : 
+Comments: 
+
+Chip type               : ATmega16
+Program type            : Application
+AVR Core Clock frequency: 11.059200 MHz
+Memory model            : Small
+External RAM size       : 0
+Data Stack size         : 256
+*****************************************************/
+
+
+#include <mega16.h>      
+#include <delay.h>
+#include <stdio.h>     
+#include <string.h>
+#include <stdlib.h>
+
+
+#define         lampu           PORTB.3     
+#define         t1              PINC.0
+#define         t2              PINC.1
+#define         t3              PINC.2
+#define         t4              PINC.3 
+#define         ledr            PORTC.4
+#define         ledg            PORTC.5
+#define         ledb            PORTD.1
+#define         pwmki           OCR1A
+#define         pwmka           OCR1B
+#define         servo1          PORTC.6
+#define         servo2          PORTC.7
+#define         lengan_bawah    pos_servo2=247;
+#define         lengan_tengah   pos_servo2=233;
+#define         lengan_atas     pos_servo2=226;
+#define         capit_lepas     pos_servo1=243;
+#define         capit_ambil     pos_servo1=233;
+
+ void scanX(int brpkali,int kec1); 
+ void scan(int kec);
+ void konvert_logic(); 
+ void logika();  
+ void cek_sensor();
+ void lcd_kedip(int ulangi); 
+ void maju(unsigned char ki,unsigned char ka);
+ void mundur(unsigned char ki,unsigned char ka);
+ void kanan(unsigned char ki,unsigned char ka);
+ void kiri(unsigned char ki,unsigned char ka);
+ void scan_garis(int kec);
+ void scan_back(int kec); 
+ void hit_tengah(int kec);
+ void scan2(int kec);   
+ void belki(int ki, int ka);
+ void belki2(int ki, int ka);
+ void belka2(int ki, int ka);  
+ void belka(int ki ,int ka);
+ void scanmundur(int ki ,int ka);    
+ void scan7ki(int brpkali,int kec1);
+ void scan7ki2(int brpkali,int kec1);
+ void scan7ka(int brpkali,int kec1);
+ void scan7ka2(int brpkali,int kec1);
+ void scan0(int brpkali,int kec1);
+ void scan0rem(int kec1);
+ void parkir();  
+ void maju_cari_garis(int brpkali,int kec1);
+ void ambil();
+ void siapambil();
+ void letakkan(); 
+ int bacawarna(); 
+ void rem(int nilai_rem);   
+ void arah2();
+ void arahbawah();
+ void arah2new(); 
+ void copy();
+ void scantime(int waktu,int kec1);
+ void arahbawah2();
+ void buang();
+ void arah2hijau();
+ void arah2merah();
+ void arah2kuningkecil(); 
+
+// Alphanumeric LCD Module functions
+#asm
+   .equ __lcd_port=0x18 ;PORTB
+#endasm
+#include <lcd.h>
+
+#define ADC_VREF_TYPE 0x60
+
+// Read the 8 most significant bits
+// of the AD conversion result
+unsigned char read_adc(unsigned char adc_input)
+{
+ADMUX=adc_input | (ADC_VREF_TYPE & 0xff);
+// Start the AD conversion
+ADCSRA|=0x40;
+// Wait for the AD conversion to complete
+while ((ADCSRA & 0x10)==0);
+ADCSRA|=0x10;
+return ADCH;
+}
+
+// Declare your global variables here         
+int hitung=0,mulai=0;
+unsigned int nadc7=0,nilai_warna=0;
+/////////////////////////////////////diisi konstanta warna     
+unsigned int lowM=  227; 
+unsigned int highM= 228;
+unsigned int lowK= 163;        
+unsigned int highK=185;
+unsigned int lowH=207;                 
+unsigned int highH=208;
+unsigned int lowB= 188; 
+unsigned int highB= 199;
+//////////////////////////////////////////////////
+char buff[33], hasilwarna;
+int i,j,k,rka=0,rki=0;  
+bit x,kondisi;    
+unsigned char kecepatanki=230,kecepatanka=230;    
+unsigned char pos_servo1,pos_servo2,a,pos_led1,pos_led2;
+char simpan;
+int capit=0,angkat=0,_maju=0,_mundur=0;
+char arr[16],irr[16];
+int push=1;
+
+eeprom int garis[10],back[10],tengah[10];      
+
+unsigned char sen[10],sensor;
+
+void ambil()
+{  capit_ambil;  delay_ms(500); bacawarna(); lengan_atas;    }
+void siapambil()
+{ capit_lepas; delay_ms(500); lengan_bawah; delay_ms(500);  }
+void letakkan()   //248 226
+{ //lengan_bawah; 
+    for(i=226;i<=248;i++){
+     pos_servo2=i;
+     delay_ms(25);
+    
+    }
+    }
+void buang()   //248 226
+{ lengan_bawah;   
+
+delay_ms(200);  capit_lepas;  delay_ms(500);  lengan_atas; delay_ms(200); capit_ambil;    
+ }
+
+void arah2()
+{
+    scanX(1,185);                    
+    rem(500);
+    ambil();
+    scan0(3,185);
+    scan0rem(170);
+    rem(100);
+    scanmundur(160,160);
+    rem(100);                    
+    belki2(170,170);
+    scan7ki2(3,200);
+    rem(100);
+    belka2(190,190);
+    rem(100);                   
+    buang(); 
+    ambil();
+    rem(100);
+    mundur(160,160);
+    delay_ms(100);
+    belka(160,160);
+    scan7ki2(1,200);
+    belka(160,160);
+        ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}
+void arah2kuningkecil()
+{
+    scanX(1,185);                    
+    rem(500);
+    ambil();
+    scan0(3,185);
+    scan0rem(170);
+    rem(100);
+    scanmundur(160,160);
+    rem(100);                    
+    belki2(170,170);
+    scan7ki2(3,200);
+    rem(100);
+    belka2(190,190);
+    rem(100);                   
+    buang();
+    rem(100);
+    mundur(160,160);
+    delay_ms(100);
+    belka(160,160);
+    scan7ki2(1,200);
+    belka(160,160);
+        ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}
+void copy()
+{   belka(170,170);
+    scan7ki2(3,170);
+}
+void arah2new()
+{
+    scanX(1,185);                    
+    rem(100);
+    //ambil();
+    scan0(3,190);
+    scan0rem(170);
+    rem(100);
+    scanmundur(160,160);
+    rem(100); 
+    buang();
+    belka2(160,160);
+    belka2(160,160);
+        ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}
+
+
+void arahbawah()
+{
+    ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}
+void arahbawah2()
+{
+     belki(170,170);
+    scanX(1,200);
+    lcd_kedip(2);                    
+    rem(500);
+    scan0(2,200);
+    rem(100);  
+                   
+    scan0rem(180);
+}
+void scanX(int brpkali,int kec1)
+ {      cek_sensor();
+        while (hitung<brpkali) { 
+                 while ((sensor & 0b00011100)!=0b00011100)    
+                 {cek_sensor();
+                  scan(kec1); 
+                 }
+                           
+                while ((sensor & 0b00011100)==0b00011100)    
+                {    cek_sensor();                      
+                     lampu=0;  
+                    
+                     scan(kec1);
+                     if ((sensor & 0b00011100)!=0b00011100) { 
+                        hitung++;  
+                        lampu=1;
+                     }; 
+                }   
+        }  
+        hitung=0;
+
+ } 
+ 
+void rem(int nilai_rem)
+ {        
+  PORTD.4=1;
+  PORTD.5=1;
+  PORTD.2=0;
+  PORTD.3=0;
+  PORTD.6=0;
+  PORTD.7=0;
+  delay_ms(nilai_rem);
+ } 
+ 
+ void konvert_logic()
+{ for(i=0;i<7;i++)
+    { if(read_adc(i)>tengah[i]) { sen[i]=1; }    
+            else if(read_adc(i)<tengah[i]){sen[i]=0;}
+    }        
+} 
+void logika()
+{   sensor=(sen[6]*64)+(sen[5]*32)+(sen[4]*16)+(sen[3]*8)+(sen[2]*4)+(sen[1]*2)+(sen[0]*1);
+}              
+void cek_sensor()
+{   konvert_logic();
+    logika();
+    lcd_gotoxy(0,0);
+    lcd_putsf("CEK SENSOR  ");
+    lcd_gotoxy(0,1);
+    sprintf(buff,"%d%d%d%d%d%d%d",sen[0],sen[1],sen[2],sen[3],sen[4],sen[5],sen[6]); 
+    lcd_puts(buff);
+} 
+
+void lcd_kedip(int ulangi)
+{  for(i=0;i<ulangi;i++)
+    {
+        lampu=0;
+        delay_ms(100);
+        lampu=1;
+        delay_ms(100);
+    }
+}        
+void maju(unsigned char ki,unsigned char ka)
+{
+        pwmka=ka;
+        pwmki=ki;
+        
+        //dir kiri
+        PORTD.2=1;
+        PORTD.3=0;
+        
+        //dir kanan
+        PORTD.6=0;
+        PORTD.7=1;        
+} 
+
+void mundur(unsigned char ki,unsigned char ka)
+{
+        pwmka=ka;
+        pwmki=ki;
+        
+        //dir kiri
+        PORTD.2=0;
+        PORTD.3=1;
+        
+        //dir kanan
+        PORTD.6=1;
+        PORTD.7=0;        
+}
+
+void kanan(unsigned char ki,unsigned char ka)
+{
+        pwmka=ka;
+        pwmki=ki;
+        
+        //dir kiri
+        PORTD.2=0;
+        PORTD.3=1;
+        
+        //dir kanan
+        PORTD.6=0;
+        PORTD.7=1;        
+}
+
+void kiri(unsigned char ki,unsigned char ka)
+{
+        pwmka=ka;
+        pwmki=ki;
+        
+        //dir kiri
+        PORTD.2=1;
+        PORTD.3=0;
+        
+        //dir kanan
+        PORTD.6=1;
+        PORTD.7=0;        
+}
+void scan_garis(int kec)
+{
+        for(i=0;i<7;i++)
+        {
+                garis[i]=read_adc(i);
+                lcd_gotoxy(0,0);
+                lcd_putsf("Baca Line");
+                lcd_gotoxy(0,1);
+                sprintf(buff,"sensor:%d = %d  ",i,garis[i]); 
+                lcd_puts(buff); 
+                lampu=0;
+                delay_ms(kec); 
+                lampu=1; 
+                   
+        }
+}   
+
+void scan_back(int kec)
+{
+        for(i=0;i<7;i++)
+        {
+                back[i]=read_adc(i); 
+                lcd_gotoxy(0,0);
+                lcd_putsf("Baca Background");
+                lcd_gotoxy(0,1);
+                sprintf(buff,"sensor:%d = %d  ",i,back[i]); 
+                lcd_puts(buff);   
+                lampu=0;
+                delay_ms(kec);  
+                lampu=1;
+                        
+        }
+}  
+   
+
+void hit_tengah(int kec)
+{
+        for(i=0;i<7;i++)
+        {
+                tengah[i]=(back[i]+garis[i])/2;   
+                lcd_gotoxy(0,0);
+                lcd_putsf("Center Point    ");
+                lcd_gotoxy(0,1);
+                sprintf(buff,"sensor:%d --> %d  ",i,tengah[i]); 
+                lcd_puts(buff); 
+                lampu=0;
+                delay_ms(kec); 
+                lampu=1;
+        }
+}     
+
+ void belki(int ki, int ka)
+ {  cek_sensor();
+     while ((sensor & 0b0000001)!=0b0000001)    
+         {cek_sensor(); 
+          kiri(ki,ka);  
+      }
+
+ }   
+void belki2(int ki, int ka)
+{      
+   cek_sensor();
+     while ((sensor & 0b0000001)!=0b0000001)    
+         {cek_sensor(); 
+          kiri(ki,ka);  
+      }
+      while ((sensor & 0b0000001)==0b0000001)    
+         {cek_sensor(); 
+          kiri(ki,ka);  
+      }       
+      rem(100);
+      lcd_kedip(5);   
+ }  
+ void belka2(int ki, int ka)
+{      
+   cek_sensor();
+     while ((sensor & 0b01000000)!=0b01000000)    
+         {cek_sensor(); 
+          kanan(ki,ka);  
+      }
+      while ((sensor & 0b01000000)==0b01000000)    
+         {cek_sensor(); 
+          kanan(ki,ka);  
+      }  
+      while ((sensor & 0b00000001)!=0b00000001)    
+         {cek_sensor(); 
+          kanan(ki,ka);  
+      }     
+      rem(100);
+      lcd_kedip(3);   
+ }  
+ 
+ 
+ void belka(int ki ,int ka) 
+ {            
+    cek_sensor();       //ka......ki
+     while ((sensor & 0b01000000)!=0b01000000)    
+         {
+         cek_sensor(); 
+         kanan(ki,ka);                      
+      }      
+ }     
+  void scanmundur(int ki ,int ka) 
+ {            
+    cek_sensor();       //ka......ki
+     while ((sensor & 0b01000000)!=0b01000000)    
+         {
+         cek_sensor(); 
+         mundur(ki,ka);                      
+      }  
+      while ((sensor & 0b01000000)==0b01000000)    
+         {
+         cek_sensor(); 
+         mundur(ki,ka);                      
+      }     
+ } 
+  void arah2hijau()
+{
+    scanX(1,185);                    
+    rem(100);
+    //ambil();
+    scan0(3,190);
+    scan0rem(170);
+    rem(100);
+    scanmundur(160,160);
+    rem(100);
+    belka(170,170);
+    scan7ki2(1,200);
+    belki2(190,190);
+    rem(100);                   
+    buang();
+    rem(100);
+    mundur(160,160);
+    delay_ms(100);  
+    belki2(180,180);
+    scan7ka2(1,200);
+    belki(160,160);
+        ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}
+void arah2merah()
+{
+    scanX(1,185);                    
+    rem(100);
+    //ambil();
+    scan0(3,190);
+    scan0rem(170);
+    rem(100);
+    scanmundur(160,160);
+    rem(100);
+    kiri(180,180);
+    delay_ms(300);
+    rem(100);
+    buang();
+    belki2(180,180);
+    belki2(170,170);
+    ///belka(170,170);
+    scanX(1,200);                    
+    //rem(500);    
+     
+    scan0(2,190);
+    //rem(100);  
+    
+    scanX(1,220);
+    lcd_kedip(3);               
+    scan0rem(180);
+    rem(100);
+}   
+
+void scan(int kec)
+{       cek_sensor();
+        sensor=sensor & 0b01111111;
+        switch(sensor)          //  1=kiri 8=kanan
+        {          //  7......1
+                case 0b00000001: maju(kec-100,kec);   x=1;     break;//DOMINAN KANAN
+                case 0b00000011: maju(kec-70,kec);   x=1;      break;
+                case 0b00000111: maju(kec-70,kec);   x=1;      break;
+                case 0b00000010: maju(kec-40,kec);   x=1;      break;
+                case 0b00000110: maju(kec-40,kec);   x=1;      break;
+                case 0b00001110: maju(kec-40,kec);   x=1;      break;
+                case 0b00000100: maju(kec-20,kec);   x=1;      break;
+                case 0b00001100: maju(kec-10,kec);   x=1;      break;  
+                case 0b00001000: maju(kec,kec);                break;   
+                case 0b00011000: maju(kec,kec-10);   x=0;      break;
+                case 0b00010000: maju(kec,kec-20);   x=0;      break;
+                case 0b00111000: maju(kec,kec-40);   x=0;      break;
+                case 0b00110000: maju(kec,kec-40);   x=0;      break;
+                case 0b00100000: maju(kec,kec-40);   x=0;      break; 
+                case 0b01110000: maju(kec,kec-70);   x=0;      break;
+                case 0b01100000: maju(kec,kec-70);   x=0;      break;
+                case 0b01000000: maju(kec,kec-100);   x=0;     break;// DOMINAN KIRI
+                case 0b00000000: 
+                 if(x==1) {
+                    kiri(kec-20,kec); 
+                    break;}
+                 else  {
+                    kanan(kec,kec-20);    
+                    break;}     
+        }
+}
+void scan2(int kec)
+{       cek_sensor();
+        sensor=sensor & 0b00111110;
+        switch(sensor)          //  1=kiri 8=kanan
+        {          //  7......1
+                case 0b00000010: maju(kec-140,kec);  x=1;      break;
+                case 0b00000110: maju(kec-70,kec);   x=1;      break;
+                case 0b00001110: maju(kec-40,kec);   x=1;      break;
+                case 0b00000100: maju(kec-20,kec);   x=1;      break;
+                case 0b00001100: maju(kec-10,kec);   x=1;      break;
+                case 0b00011100: maju(kec,kec+3);              break;
+                case 0b00001000: maju(kec,kec+3);              break;
+                case 0b00011000: maju(kec,kec-10);   x=0;      break;
+                case 0b00010000: maju(kec,kec-20);   x=0;      break; 
+                case 0b00111000: maju(kec,kec-40);   x=0;      break;
+                case 0b00110000: maju(kec,kec-70);   x=0;      break;
+                case 0b00100000: maju(kec,kec-140);  x=0;      break;
+                case 0b01111111: maju(kec,kec);            break;
+                case 0b00000000: maju(kec,kec+3);              break;
+                case 0b01101101: maju(kec,kec);            break;
+                case 0b01111011: maju(kec,kec);            break;
+                case 0b01011011: maju(kec,kec);            break;
+         
+        }
+}
+void scan7ki(int brpkali,int kec1)
+{       cek_sensor();
+        while (hitung<brpkali) 
+        {             
+             while ((sensor & 0b00000001)!=0b00000001)    
+             {cek_sensor();
+              scan2(kec1); 
+             }
+                           
+            while ((sensor & 0b00000001)==0b00000001)    
+            {    cek_sensor();                      
+                 lampu=0;  
+                 scan2(kec1);
+                 if ((sensor & 0b00000001)!=0b00000001) { 
+                    hitung++;  
+                    lampu=1;
+                 }; 
+            }   
+        };  
+        hitung=0;           
+}   
+void scan7ka(int brpkali,int kec1)
+{      cek_sensor();
+        while (hitung<brpkali) 
+        {             
+             while ((sensor & 0b00100000)!=0b00100000)    
+             {cek_sensor();
+              scan2(kec1); 
+             }
+                           
+            while ((sensor & 0b00100000)==0b00100000)    
+            {    cek_sensor();                      
+                 lampu=0;  
+                 scan2(kec1);
+                 if ((sensor & 0b00100000)!=0b00100000) { 
+                    hitung++;  
+                    lampu=1;
+                 }; 
+            }   
+        };  
+        hitung=0;                   
+}
+void scan7ka2(int brpkali,int kec1)
+{       cek_sensor();
+        while (hitung<brpkali) 
+        {             
+             while ((sensor & 0b00100000)!=0b00100000)    
+             {cek_sensor();
+              scan(kec1); 
+             }
+                           
+            while ((sensor & 0b00100000)==0b00100000)    
+            {    cek_sensor();                      
+                 lampu=0;  
+                 scan(kec1);
+                 if ((sensor & 0b00100000)!=0b00100000) { 
+                    hitung++;  
+                    lampu=1;
+                 }; 
+            }   
+        };  
+        hitung=0;                   
+}
+void scan0(int brpkali,int kec1)
+{      cek_sensor();
+        while (hitung<brpkali) 
+        {             
+            while ((sensor & 0b01111111)!=0b00000000)    
+             {cek_sensor();
+              scan2(kec1); 
+             }
+                           
+            while ((sensor & 0b01111111)==0b00000000)    
+            {    cek_sensor();                      
+                 lampu=0;  
+                 scan2(kec1);
+                 if ((sensor & 0b01111111)!=0b00000000) { 
+                    hitung++;  
+                    lampu=1;
+                 }; 
+            }   
+        };  
+        hitung=0;                   
+}
+void scan0rem(int kec1)
+{   cek_sensor();             
+    while ((sensor & 0b01111111)!=0b00000000)    
+     {cek_sensor();
+      scan2(kec1); 
+     }  
+     rem(100);                 
+}
+
+void scan7ki2(int brpkali,int kec1)
+{      cek_sensor();
+        while (hitung<brpkali) 
+        {             
+             while ((sensor & 0b00000001)!=0b00000001)    
+             {cek_sensor();
+              scan(kec1); 
+             }
+                           
+            while ((sensor & 0b00000001)==0b00000001)    
+            {    cek_sensor();                      
+                 lampu=0;  
+                 scan(kec1);
+                 if ((sensor & 0b00000001)!=0b00000001) { 
+                    hitung++;  
+                    lampu=1;
+                 }; 
+            }   
+        };
+        hitung=0;           
+}
+
+void cekdatasensor()
+{      
+        for(i=0;i<7;i++)
+        {
+                lcd_gotoxy(0,0);
+                sprintf(buff,"data ke = %d ",i);  
+                lcd_puts(buff);    
+                
+                lcd_gotoxy(0,1);
+                sprintf(buff,"sensing = %d  ",read_adc(i));  
+                lcd_puts(buff);        
+                delay_ms(1000); 
+        }
+} 
+
+ void parkir()
+ {  lampu=0; while(1){rem(100);} }
+ 
+ void maju_cari_garis(int brpkali,int kec1)
+ { 
+        cek_sensor(); maju(kec1,kec1);
+        while (hitung<brpkali) {     
+         while ((sensor & 0b0011100)!=0b0011100)    
+         {cek_sensor();
+          maju(kec1,kec1); 
+         }                
+        while ((sensor & 0b0011100)==0b0011100)    
+        {    cek_sensor();                      
+             lampu=0;  
+             maju(kec1,kec1);
+             if ((sensor & 0b0011100)!=0b0011100) { 
+                hitung++;  
+                lampu=1;
+             }; 
+        }   
+        };  
+        hitung=0;    
+ } 
+ 
+ 
+
+ 
+  // Timer 0 overflow interrupt service routine
+interrupt [TIM0_OVF] void timer0_ovf_isr(void)
+{
+TCNT0=0x96; //BE
+ a++;
+       if    (a<=pos_servo1)      {servo1=0;}      
+       else                      {servo1=1; }
+       if    (a<=pos_servo2)      {servo2=0;}      
+       else                      {servo2=1; }  
+                
+}
+int bacawarna()
+{
+    nilai_warna=read_adc(7);
+    lcd_gotoxy(0,1);
+    sprintf(buff,"%d   ",nadc7); 
+    lcd_puts(buff);
+    delay_ms(100);
+    
+        if(nilai_warna>=lowK &&  nilai_warna<=highK){
+             lcd_gotoxy(0,0);lcd_putsf("KUNING   "); 
+            hasilwarna='K';
+         }
+             
+         else if(nilai_warna>=lowB &&  nilai_warna<=highB){
+             lcd_gotoxy(0,0);lcd_putsf("BIRU     ");
+            hasilwarna='B';
+         }
+             
+         else if(nilai_warna>=lowM &&  nilai_warna<=highM){
+             lcd_gotoxy(0,0);lcd_putsf("MERAH    ");
+             hasilwarna='M';
+         }
+             
+         else if(nilai_warna>=lowH &&  nilai_warna<=highH){
+             lcd_gotoxy(0,0);lcd_putsf("HIJAU    ");
+            hasilwarna='H';
+         }
+         else { hasilwarna='X';}    
+    return(hasilwarna);
+}
+void scantime(int waktu,int kec1)
+ {      cek_sensor();
+        
+        while (hitung<waktu) { 
+                 scan(kec1);
+                 hitung++;
+                 delay_ms(10);                  
+        }  
+        hitung=0;  
+ }
+// Timer 0 output compare interrupt service routine
+interrupt [TIM0_COMP] void timer0_comp_isr(void)
+{
+// Place your code here
+}
+void main(void)
+{
+// Declare your local variables here
+
+// Input/Output Ports initialization
+// Port A initialization
+// Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In 
+// State7=T State6=T State5=T State4=T State3=T State2=T State1=T State0=T 
+PORTA=0x00;
+DDRA=0x00;
+
+// Port B initialization
+// Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In 
+// State7=T State6=T State5=T State4=T State3=T State2=T State1=T State0=T 
+PORTB=0x08;
+DDRB=0Xff;//0x08;
+
+// Port C initialization
+// Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In 
+// State7=T State6=T State5=T State4=T State3=P State2=P State1=P State0=P 
+PORTC=0xFF;
+DDRC=0xF0; //C0
+
+// Port D initialization
+// Func7=In Func6=In Func5=Out Func4=Out Func3=In Func2=In Func1=In Func0=In 
+// State7=T State6=T State5=0 State4=0 State3=T State2=T State1=T State0=T 
+PORTD=0x01;
+DDRD=0xFE; //3F
+
+// Timer/Counter 0 initialization    
+TCCR0=0x4A;
+TCNT0=0x96;
+OCR0=0x00;
+
+// Timer/Counter 1 initialization
+TCCR1A=0xA1;
+TCCR1B=0x09;
+TCNT1H=0x00;
+TCNT1L=0x00;
+ICR1H=0x00;
+ICR1L=0x00;
+OCR1AH=0x00;
+OCR1AL=0x00;
+OCR1BH=0x00;
+OCR1BL=0x00;
+
+// Timer/Counter 2 initialization
+// Clock source: System Clock
+// Clock value: Timer 2 Stopped
+// Mode: Normal top=FFh
+// OC2 output: Disconnected
+ASSR=0x00;
+TCCR2=0x00;
+TCNT2=0x00;
+OCR2=0x00;
+
+// External Interrupt(s) initialization
+// INT0: Off
+// INT1: Off
+// INT2: Off
+MCUCR=0x00;
+MCUCSR=0x00;
+
+// Timer(s)/Counter(s) Interrupt(s) initialization
+TIMSK=0x03;
+
+// Analog Comparator initialization
+// Analog Comparator: Off
+// Analog Comparator Input Capture by Timer/Counter 1: Off
+ACSR=0x80;
+SFIOR=0x00;
+
+
+
+MCUCR=0x00;
+MCUCSR=0x00;
+
+////USART, UNTUK KOMUNIKASI BLUETOOTH
+//UCSRA=0x00;
+//UCSRB=0x18;
+//UCSRC=0x86;
+//UBRRH=0x00;
+//UBRRL=0x47;
+// USART initialization
+// USART disabled
+UCSRB=0x00;
+
+// ADC initialization
+// ADC Clock frequency: 691.200 kHz
+// ADC Voltage Reference: AVCC pin
+// ADC Auto Trigger Source: None
+// Only the 8 most significant bits of
+// the AD conversion result are used
+ADMUX=ADC_VREF_TYPE & 0xff;
+ADCSRA=0x84;
+//ADCSRA=0xA6;
+SFIOR&=0x1F;
+
+// LCD module initialization
+lcd_init(16); //      
+lcd_clear();//
+lampu=0;    //
+         //k,b
+lcd_gotoxy(0,0);
+lcd_putsf("FF OnlineShop");
+lcd_gotoxy(0,1);
+lcd_putsf("Robot ATMega16A");
+delay_ms(1000);
+lcd_clear();
+
+
+// PROGRAM UTAMA
+// Global enable interrupts
+#asm("sei")
+ if(t1==0)
+ {    scan_garis(10); delay_ms(1500); maju(160,160); delay_ms(200); rem(100); 
+       scan_back(10); hit_tengah(10); lcd_clear();
+ }
+lengan_atas;
+capit_lepas;
+
+while (1)
+  {  
+         
+        
+        if(t1==0)
+       {       
+            ///PORGRAM TES BACA WARNA    
+            lengan_bawah;
+            while(1){               
+             bacawarna();
+             if(hasilwarna=='K'){
+                 lcd_gotoxy(0,0);lcd_putsf("KUNING   "); 
+                 
+             }
+             
+             else if(hasilwarna=='B'){
+                 lcd_gotoxy(0,0);lcd_putsf("BIRU     ");
+                 //progam biru 
+             }
+             
+             else if(hasilwarna=='M'){
+                 lcd_gotoxy(0,0);lcd_putsf("MERAH    ");
+                 //progam merah 
+             }
+             
+             else if(hasilwarna=='H'){
+                 lcd_gotoxy(0,0);lcd_putsf("HIJAU    ");
+                 //progam hijau 
+             }
+            }
+       
+       
+       
+        }
+                
+        if(t2==0)
+        { mulai=mulai+1; delay_ms(200); lampu=0;
+          lcd_gotoxy(0,0);lcd_putsf("mulai cek point:"); 
+          lcd_gotoxy(0,1); sprintf(buff,"%d  ",mulai); lcd_puts(buff); 
+          if (mulai>=20)mulai=0;}         
+            
+        if(t3==0)  
+        {  lcd_clear(); lampu=1;
+            while(1)
+            {   switch(mulai)
+                {
+                 case 1: goto satu3; break;
+                 case 2: goto dua3; break;
+                 case 3: goto tiga3; break;
+                 case 4: goto empat3; break;
+                 case 5: goto lima3; break; 
+                 case 6: goto enam3; break;
+                 case 7: goto tujuh3; break;
+                 case 8: goto delapan3; break;
+                 case 9: goto sembilan3; break; 
+                 case 10: goto sepuluh3; break;
+                }  
+                
+                    
+                satu3: 
+                     scanX(1, 180);
+                     rem(1000);
+                     belki(170,170);
+                     rem(1000);
+                     scanX(5, 180);
+                     rem(1000);
+                     belka(170,170);
+                     rem(1000);
+                     scanX(5, 180);
+                     rem(1000);
+                     mundur(150,1000);
+                     belka(170,170);
+                     rem(1000);
+                     scanX(3, 180);
+                     rem(1000);
+                     belki(170,170);
+                     rem(1000);
+                     scanX(3, 180);
+                     rem(1000);
+                     belka(170,170);
+                     rem(1000);
+                     belki(170,170);
+                     rem(1000);
+                     scanX(2, 180);
+                     rem(1000);
+                     belka(170,170);
+                     rem(1000);
+                     scanX(1, 100);
+                     parkir();
+                   
+                     
+                dua3:  
+                       
+                tiga3:
+                  
+                empat3:
+                  
+                lima3:
+                 
+                enam3:
+             
+                tujuh3:
+                
+                delapan3:
+                
+                sembilan3:
+                    
+                sepuluh3:  
+                    
+            }  
+        }
+        
+        if(t4==0)  //start BIRU
+        {   
+
+            lcd_clear(); lampu=1;
+            while(1)
+            {   switch(mulai)
+                {
+                 case 1: cek_sensor(); goto satu4;  break;
+                 case 2: cek_sensor(); goto dua4; break;
+                 case 3: cek_sensor(); goto tiga4;  break;
+                 case 4: cek_sensor(); goto empat4;  break;
+                 case 5: cek_sensor(); goto lima4;  break; 
+                 case 6: cek_sensor(); goto enam4;  break; 
+                }     
+             
+        satu4:
+                    while(1)  
+                   { 
+                    lampu=0; 
+                    mundur(190,190);
+                    delay_ms(300);
+                    scanmundur(195,195);
+                    belki(160,160);
+                    rem(100);
+                    scanX(1,220); 
+                    rem(100);
+                    
+        enam4:
+            stepx:
+                    ///////////////program misi 
+                    
+                    belki(160,160);
+                    //akhir
+                    goto kirimx;
+                                               
+                   
+                    ///////////////program lain
+             stepz:
+                    lcd_kedip(10); parkir();     
+                    
+                    
+        tiga4:
+                    
+                   
+        lima4:      
+                      
+                   
+                        
+                    
+        dua4:
+                    
+                    
+        empat4:
+                     
+                    
+                }
+                     
+                    nilai_warna=bacawarna(); 
+                     //nilai berikut bukan ketentuan, disesuaikan dengan robot masing-masing 
+                     //hijau  204
+                     //kuning   10
+                     //kosong   156
+                     //merah   51
+                    if(nilai_warna>225 && nilai_warna<235){//jika kuning
+                       //program warna kuning
+                       
+                       scanX(1,180);
+                       rem(500);
+                       parkir(); 
+                     
+                     }
+                   
+                   
+                    if(nilai_warna>150 && nilai_warna<160){ 
+                       
+                     
+                     }
+                           
+                 
+                    if(nilai_warna>5 && nilai_warna<25){  //Jika Hijau
+                        //program ketika warna hijau
+                       
+                   } 
+                    
+                      
+             
+                    while(1){
+                        scanX(1,150);
+                        parkir();
+                    }  
+                 
+                    
+                             
+            
+      kirimx:  
+             if(hasilwarna=='K'){ 
+                 arah2kuningkecil();
+                 goto stepz;
+             }
+             
+             else if(hasilwarna=='B'){
+                 arah2new();  
+                 goto stepz;
+             }
+             
+             else if(hasilwarna=='M'){
+                 arah2merah();
+                 goto stepz; 
+             }
+             
+             else if(hasilwarna=='H'){
+                 arah2hijau();
+                 goto stepz; 
+             }
+             else if(hasilwarna=='X'){
+                 bacawarna();  //ulangi
+                 arah2hijau(); //mencoba mengirim barang dengan mendapatkan minimal poin
+                 goto stepz; 
+             }                 
+               
+             }                
+                
+        }     
+                
+ }   
+          
+}

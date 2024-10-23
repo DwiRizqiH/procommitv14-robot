@@ -1,0 +1,100 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+highM                                                                             0x0160       2
+lowK                                                                              0x0162       2
+highK                                                                             0x0164       2
+lowH                                                                              0x0166       2
+highH                                                                             0x0168       2
+lowB                                                                              0x016A       2
+highB                                                                             0x016C       2
+buff                                                                              0x016E      33
+hasilwarna                                                                        0x018F       1
+i                                                                                 0x0190       2
+pos_servo1                                                                        0x0192       1
+pos_servo2                                                                        0x0193       1
+a                                                                                 0x0194       1
+sen                                                                               0x0195      10
+sensor                                                                            0x019F       1
+_seed (stdlib.lib)                                                                0x01A0       4
+_base_y (lcd.lib)                                                                 0x01A4       4
+_lcd_x                                                                            0x01A8       1
+_lcd_y                                                                            0x01A9       1
+_lcd_maxx                                                                         0x01AA       1
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+garis                                                                             0x0000      20
+back                                                                              0x0014      20
+tengah                                                                            0x0028      20
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+hitung                                                                            R4,R5        2
+mulai                                                                             R6,R7        2
+nadc7                                                                             R8,R9        2
+nilai_warna                                                                       R10,R11      2
+lowM                                                                              R12,R13      2
+x                                                                                 R2.0      1bit
+kondisi                                                                           R2.1      1bit
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+read_adc                                                                          0x0010F     11
+ambil                                                                             0x0011A      8
+buang                                                                             0x00122     13
+arah2kuningkecil                                                                  0x0012F     41
+arah2new                                                                          0x00158     17
+scanX                                                                             0x00169     24
+rem                                                                               0x00181     11
+konvert_logic                                                                     0x0018C     28
+logika                                                                            0x001A8     39
+cek_sensor                                                                        0x001CF     47
+lcd_kedip                                                                         0x001FE     19
+maju                                                                              0x00211      7
+mundur                                                                            0x00218      7
+kanan                                                                             0x0021F      7
+kiri                                                                              0x00226      7
+scan_garis                                                                        0x0022D     40
+scan_back                                                                         0x00255     40
+hit_tengah                                                                        0x0027D     63
+belki                                                                             0x002BC      9
+belki2                                                                            0x002C5     20
+belka2                                                                            0x002D9     26
+belka                                                                             0x002F3      9
+scanmundur                                                                        0x002FC     15
+arah2hijau                                                                        0x0030B     38
+arah2merah                                                                        0x00331     55
+scan                                                                              0x00368    156
+scan2                                                                             0x00404    131
+scan7ka2                                                                          0x00487     24
+scan0                                                                             0x0049F     29
+scan0rem                                                                          0x004BC     12
+scan7ki2                                                                          0x004C8     27
+parkir                                                                            0x004E3      4
+timer0_ovf_isr                                                                    0x004E7     34
+bacawarna                                                                         0x00509    117
+timer0_comp_isr                                                                   0x0057E      1
+main                                                                              0x0057F    427
+put_buff_G100                                                                     0x0072A     64
+_print_G100                                                                       0x0076A    316
+sprintf                                                                           0x008A6     60
+strlen                                                                            0x008E2     12
+strlenf                                                                           0x008EE     13
+_lcd_delay_G103                                                                   0x008FB      4
+_lcd_ready                                                                        0x008FF     17
+_lcd_write_nibble_G103                                                            0x00910     10
+_lcd_write_data                                                                   0x0091A     15
+_lcd_read_nibble_G103                                                             0x00929      9
+lcd_read_byte0_G103                                                               0x00932      9
+lcd_gotoxy                                                                        0x0093B     20
+lcd_clear                                                                         0x0094F     21
+lcd_putchar                                                                       0x00964     39
+lcd_puts                                                                          0x0098B     15
+lcd_putsf                                                                         0x0099A     19
+_long_delay_G103                                                                  0x009AD      5
+_lcd_init_write_G103                                                              0x009B2     12
+lcd_init                                                                          0x009BE     52
