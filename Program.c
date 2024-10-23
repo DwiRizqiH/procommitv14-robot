@@ -1035,7 +1035,7 @@ while (1)
                      rem(1000);
                      scanX(5, 180);
                      rem(1000);
-                     mundur(150,1000);
+                     mundur(150,1000)
                      belka(170,170);
                      rem(1000);
                      scanX(3, 180);
