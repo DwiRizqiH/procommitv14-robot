@@ -1021,7 +1021,7 @@ while (1)
                  case 8: goto delapan3; break;
                  case 9: goto sembilan3; break; 
                  case 10: goto sepuluh3; break;
-                }  
+                }
                 
                     
                 satu3: 
