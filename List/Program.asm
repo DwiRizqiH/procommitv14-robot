@@ -1740,23 +1740,14 @@ _0x2E:
 ;delay_ms(200);
 ;void maju(unsigned char ki, unsigned char ka)
 ; 0000 005B {
-_maju:
-; .FSTART _maju
 ;pwmka = ka;
-	CALL SUBOPT_0xD
 ;	ki -> Y+1
 ;	ka -> Y+0
 ;pwmki = ki;
 ;PORTD.2 = 1;
-	SBI  0x12,2
 ;PORTD.3 = 0;
-	CBI  0x12,3
 ;PORTD.6 = 0;
-	CBI  0x12,6
 ;PORTD.7 = 1;
-	SBI  0x12,7
-	RJMP _0x20C000A
-; .FEND
 ;void mundur(unsigned char ki, unsigned char ka)
 ;pwmka = ka;
 ;	ki -> Y+1
@@ -1880,21 +1871,10 @@ _rem:
 	RJMP _0x20C000A
 ; .FEND
 ;void maju_delay(int kec, int lama)
-_maju_delay:
-; .FSTART _maju_delay
 ;maju(kec, kec);
-	ST   -Y,R27
-	ST   -Y,R26
 ;	kec -> Y+2
 ;	lama -> Y+0
-	LDD  R30,Y+2
-	ST   -Y,R30
-	LDD  R26,Y+3
-	RCALL _maju
 ;delay(lama);
-	CALL SUBOPT_0xF
-	RJMP _0x20C0009
-; .FEND
 ;void pilihSpeed(int kec)
 _pilihSpeed:
 ; .FSTART _pilihSpeed
@@ -1902,32 +1882,32 @@ _pilihSpeed:
 	ST   -Y,R27
 	ST   -Y,R26
 ;	kec -> Y+0
-	CALL SUBOPT_0x10
+	CALL SUBOPT_0xF
 	__GETD2N 0x3E19999A
 	CALL __MULF12
 	LDI  R26,LOW(_kp)
 	LDI  R27,HIGH(_kp)
-	CALL SUBOPT_0x11
-;kd = kec * 0.6;
 	CALL SUBOPT_0x10
+;kd = kec * 0.6;
+	CALL SUBOPT_0xF
 	__GETD2N 0x3F19999A
 	CALL __MULF12
 	LDI  R26,LOW(_kd)
 	LDI  R27,HIGH(_kd)
-	CALL SUBOPT_0x11
+	CALL SUBOPT_0x10
 ;SPEED = kec;
 	LD   R30,Y
 	LDD  R31,Y+1
 	STS  _SPEED,R30
 	STS  _SPEED+1,R31
 ;MIN_SPEED = -(kec * 0.75);
-	CALL SUBOPT_0x10
+	CALL SUBOPT_0xF
 	__GETD2N 0x3F400000
 	CALL __MULF12
 	CALL __ANEGF1
 	LDI  R26,LOW(_MIN_SPEED)
 	LDI  R27,HIGH(_MIN_SPEED)
-	CALL SUBOPT_0x11
+	CALL SUBOPT_0x10
 ;MAX_SPEED = kec;
 	LD   R30,Y
 	LDD  R31,Y+1
@@ -1966,13 +1946,13 @@ _scan:
 	LDD  R27,Y+8+1
 	RCALL _pilihSpeed
 ;sensor = sensor & 0b01111111;
-	CALL SUBOPT_0x12
+	CALL SUBOPT_0x11
 	ANDI R30,LOW(0x7F)
 	ANDI R31,HIGH(0x7F)
 	STS  _sensor,R30
 	STS  _sensor+1,R31
 ;switch (sensor) //  1=kiri 8=kanan
-	CALL SUBOPT_0x12
+	CALL SUBOPT_0x11
 ;{               //  7......1
 ;case 0b00000001:
 	CPI  R30,LOW(0x1)
@@ -2161,7 +2141,7 @@ _0x80:
 	STD  Y+6,R30
 	STD  Y+6+1,R31
 ;if (moveLeft > MAX_SPEED)
-	CALL SUBOPT_0x13
+	CALL SUBOPT_0x12
 	CP   R30,R20
 	CPC  R31,R21
 	BRGE _0x8E
@@ -2169,7 +2149,7 @@ _0x80:
 	__GETWRMN 20,21,0,_MAX_SPEED
 ;if (moveLeft < MIN_SPEED)
 _0x8E:
-	CALL SUBOPT_0x14
+	CALL SUBOPT_0x13
 	CP   R20,R30
 	CPC  R21,R31
 	BRGE _0x8F
@@ -2177,26 +2157,26 @@ _0x8E:
 	__GETWRMN 20,21,0,_MIN_SPEED
 ;if (moveRight > MAX_SPEED)
 _0x8F:
-	CALL SUBOPT_0x13
+	CALL SUBOPT_0x12
 	LDD  R26,Y+6
 	LDD  R27,Y+6+1
 	CP   R30,R26
 	CPC  R31,R27
 	BRGE _0x90
 ;moveRight = MAX_SPEED;
-	CALL SUBOPT_0x13
+	CALL SUBOPT_0x12
 	STD  Y+6,R30
 	STD  Y+6+1,R31
 ;if (moveRight < MIN_SPEED)
 _0x90:
-	CALL SUBOPT_0x14
+	CALL SUBOPT_0x13
 	LDD  R26,Y+6
 	LDD  R27,Y+6+1
 	CP   R26,R30
 	CPC  R27,R31
 	BRGE _0x91
 ;moveRight = MIN_SPEED;
-	CALL SUBOPT_0x14
+	CALL SUBOPT_0x13
 	STD  Y+6,R30
 	STD  Y+6+1,R31
 ;setMotor(moveLeft, moveRight);
@@ -2226,7 +2206,7 @@ _0x92:
 	BRGE _0x94
 ;while ((sensor & 0b00011100) != 0b00011100)
 _0x95:
-	CALL SUBOPT_0x15
+	CALL SUBOPT_0x14
 	BREQ _0x97
 ;cek_sensor();
 	RCALL _cek_sensor
@@ -2238,7 +2218,7 @@ _0x95:
 _0x97:
 ;while ((sensor & 0b00011100) == 0b00011100)
 _0x98:
-	CALL SUBOPT_0x15
+	CALL SUBOPT_0x14
 	BRNE _0x9A
 ;cek_sensor();
 	RCALL _cek_sensor
@@ -2249,7 +2229,7 @@ _0x98:
 	LDD  R27,Y+1
 	RCALL _scan
 ;if ((sensor & 0b00011100) != 0b00011100)
-	CALL SUBOPT_0x15
+	CALL SUBOPT_0x14
 	BREQ _0x9D
 ;hitung++;
 	MOVW R30,R4
@@ -2357,7 +2337,7 @@ _0xC7:
 	BREQ _0xC9
 _0xCA:
 ;kiri(kec, kec);
-	CALL SUBOPT_0x16
+	CALL SUBOPT_0x15
 ;cek_sensor();
 	RJMP _0xC7
 _0xC9:
@@ -2373,7 +2353,7 @@ _0xCF:
 	RJMP _0xCE
 _0xD0:
 ;kiri(kec, kec);
-	CALL SUBOPT_0x16
+	CALL SUBOPT_0x15
 ;cek_sensor();
 	RJMP _0xCC
 _0xCE:
@@ -2411,7 +2391,7 @@ _0xD5:
 	BREQ _0xD7
 _0xD8:
 ;kanan(kec, kec);
-	CALL SUBOPT_0x17
+	CALL SUBOPT_0x16
 ;cek_sensor();
 	RJMP _0xD5
 _0xD7:
@@ -2427,7 +2407,7 @@ _0xDD:
 	RJMP _0xDC
 _0xDE:
 ;kanan(kec, kec);
-	CALL SUBOPT_0x17
+	CALL SUBOPT_0x16
 ;cek_sensor();
 	RJMP _0xDA
 _0xDC:
@@ -2461,34 +2441,44 @@ _0xDF:
 _belokKanan:
 ; .FSTART _belokKanan
 ;if(mapMirror == map_biru) {
-	ST   -Y,R27
-	ST   -Y,R26
+	CALL SUBOPT_0x17
 ;	kec -> Y+2
 ;	lama_rem -> Y+0
-	CALL SUBOPT_0x18
-	SBIW R30,0
 	BRNE _0xE7
 ;belka(kec, lama_rem);
-	CALL SUBOPT_0x19
+	CALL SUBOPT_0x18
 	RCALL _belka
 ;} else {
 	RJMP _0xE8
 _0xE7:
 ;belki(kec, lama_rem);
-	CALL SUBOPT_0x19
+	CALL SUBOPT_0x18
 	RCALL _belki
 _0xE8:
+	RJMP _0x20C0009
+; .FEND
+;void belokKiri(int kec, int lama_rem) {
+_belokKiri:
+; .FSTART _belokKiri
+;if(mapMirror == map_biru) {
+	CALL SUBOPT_0x17
+;	kec -> Y+2
+;	lama_rem -> Y+0
+	BRNE _0xE9
+;belki(kec, lama_rem);
+	CALL SUBOPT_0x18
+	RCALL _belki
+;} else {
+	RJMP _0xEA
+_0xE9:
+;belka(kec, lama_rem);
+	CALL SUBOPT_0x18
+	RCALL _belka
+_0xEA:
 _0x20C0009:
 	ADIW R28,4
 	RET
 ; .FEND
-;void belokKiri(int kec, int lama_rem) {
-;if(mapMirror == map_biru) {
-;	kec -> Y+2
-;	lama_rem -> Y+0
-;belki(kec, lama_rem);
-;} else {
-;belka(kec, lama_rem);
 ;void griper()
 ; 0000 005D {
 ;capit_lepas;
@@ -2513,12 +2503,16 @@ _ambil:
 	LDI  R30,LOW(237)
 	MOV  R13,R30
 ;delay(lama);
-	CALL SUBOPT_0xF
+	LD   R26,Y
+	LDD  R27,Y+1
+	RCALL _delay
 ;lengan_atas;
 	LDI  R30,LOW(234)
 	MOV  R12,R30
 ;delay(lama);
-	CALL SUBOPT_0xF
+	LD   R26,Y
+	LDD  R27,Y+1
+	RCALL _delay
 	JMP  _0x20C0004
 ; .FEND
 ;void taruh(int lama)
@@ -2553,7 +2547,7 @@ _bacawarna:
 	CLR  R7
 ;lcd_gotoxy(13, 1);
 	LDI  R30,LOW(13)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;sprintf(buff, "%d   ", nadc7);
 	CALL SUBOPT_0x4
 	__POINTW1FN _0x0,94
@@ -2582,25 +2576,27 @@ _bacawarna:
 ; 0000 005F void Program_Jalan() {
 _Program_Jalan:
 ; .FSTART _Program_Jalan
-;maju_delay(1000, 400);
-	CALL SUBOPT_0x1B
-	LDI  R26,LOW(400)
-	LDI  R27,HIGH(400)
-	RCALL _maju_delay
-;scanX(1, 1000); belokKanan(1000, 200);
+;scanX(1, 2000); belokKiri(2000, 200);
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
-	CALL SUBOPT_0x1C
-	CALL SUBOPT_0x1D
-;scanX(5, 1000); belokKanan(1000, 200);
-	CALL SUBOPT_0x1C
-	CALL SUBOPT_0x1D
-;scanX(5, 1000);
+	CALL SUBOPT_0x1A
+	RCALL _belokKiri
+;scanX(5, 2000); belokKanan(2000, 200);
+	LDI  R30,LOW(5)
+	LDI  R31,HIGH(5)
+	CALL SUBOPT_0x1A
+	RCALL _belokKanan
+;scanX(5, 2000); rem(200);
+	LDI  R30,LOW(5)
+	LDI  R31,HIGH(5)
 	ST   -Y,R31
 	ST   -Y,R30
-	LDI  R26,LOW(1000)
-	LDI  R27,HIGH(1000)
+	LDI  R26,LOW(2000)
+	LDI  R27,HIGH(2000)
 	RCALL _scanX
+	LDI  R26,LOW(200)
+	LDI  R27,0
+	RCALL _rem
 	RET
 ; .FEND
 ;void balikKanan() {
@@ -2641,7 +2637,7 @@ _0xFA:
 	RJMP _0xF9
 _0xFB:
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;lcd_putsf("Menu");
 	__POINTW2FN _0x0,100
@@ -2662,7 +2658,7 @@ _0xF9:
 ;lcd_gotoxy(0, 1);
 _0x100:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Calibration");
 	__POINTW2FN _0x0,105
 	CALL _lcd_putsf
@@ -2687,7 +2683,7 @@ _0x103:
 ;lcd_gotoxy(0, 1);
 _0x102:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Run Bot");
 	__POINTW2FN _0x0,117
 	CALL _lcd_putsf
@@ -2708,7 +2704,7 @@ _0x101:
 ;lcd_gotoxy(0, 1);
 _0x106:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Sens Warna");
 	__POINTW2FN _0x0,125
 	CALL _lcd_putsf
@@ -2735,7 +2731,7 @@ _0x109:
 ;lcd_gotoxy(0, 1);
 _0x108:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Map Biru");
 	__POINTW2FN _0x0,136
 	CALL _lcd_putsf
@@ -2762,7 +2758,7 @@ _0x10D:
 ;lcd_gotoxy(0, 1);
 _0x10C:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Map Merah");
 	__POINTW2FN _0x0,145
 	CALL _lcd_putsf
@@ -2783,7 +2779,7 @@ _0x10B:
 ;lcd_gotoxy(0, 1);
 _0x110:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Motor");
 	__POINTW2FN _0x0,155
 	CALL _lcd_putsf
@@ -2804,7 +2800,7 @@ _0x10F:
 ;lcd_gotoxy(0, 1);
 _0x112:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Button");
 	__POINTW2FN _0x0,161
 	CALL _lcd_putsf
@@ -2825,7 +2821,7 @@ _0x111:
 ;lcd_gotoxy(0, 1);
 _0x114:
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Capit");
 	__POINTW2FN _0x0,168
 	CALL _lcd_putsf
@@ -2844,11 +2840,11 @@ _runBot:
 	CPI  R30,0
 	BRNE _0x116
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;lcd_putsf("Run Bot");
 	__POINTW2FN _0x0,117
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("Click 2 to start");
 	__POINTW2FN _0x0,174
@@ -2866,14 +2862,14 @@ _0x116:
 	CALL _lcd_clear
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Running...");
 	__POINTW2FN _0x0,191
 	CALL _lcd_putsf
 ;Program_Jalan();
 	RCALL _Program_Jalan
 ;isChildSelect = false;
-	CALL SUBOPT_0x20
+	CALL SUBOPT_0x1D
 ;changeMenu(0, false);
 _0x118:
 _0x117:
@@ -2885,11 +2881,11 @@ _calibration:
 ;scan_garis();
 	RCALL _scan_garis
 ;delay(1000);
-	CALL SUBOPT_0x21
+	CALL SUBOPT_0x1E
 ;scan_back();
 	RCALL _scan_back
 ;delay(1000);
-	CALL SUBOPT_0x21
+	CALL SUBOPT_0x1E
 ;hit_tengah();
 	RCALL _hit_tengah
 ;isChildSelect = false;
@@ -2923,7 +2919,7 @@ _0x119:
 	LDI  R27,HIGH(_mapMirror)
 	CALL __EEPROMWRW
 ;isChildSelect = false;
-	CALL SUBOPT_0x20
+	CALL SUBOPT_0x1D
 ;changeMenu(0, false);
 	JMP  _0x20C0004
 ; .FEND
@@ -2931,56 +2927,54 @@ _0x119:
 _test_motor:
 ; .FSTART _test_motor
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;lcd_putsf("Test Motor");
 	__POINTW2FN _0x0,202
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("+1000 +1000");
 	__POINTW2FN _0x0,213
-	CALL _lcd_putsf
+	CALL SUBOPT_0x1F
 ;setMotor(1000, 1000);
-	CALL SUBOPT_0x1B
-	CALL SUBOPT_0x22
+	CALL SUBOPT_0x20
 ;delay_ms(2000);
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("-1000 -1000");
 	__POINTW2FN _0x0,225
-	CALL SUBOPT_0x23
+	CALL SUBOPT_0x21
 ;setMotor(-1000, -1000);
-	CALL SUBOPT_0x24
+	CALL SUBOPT_0x22
 ;delay_ms(2000);
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("+1000 -1000");
 	__POINTW2FN _0x0,237
-	CALL _lcd_putsf
+	CALL SUBOPT_0x1F
 ;setMotor(1000, -1000);
-	CALL SUBOPT_0x1B
-	CALL SUBOPT_0x24
+	CALL SUBOPT_0x22
 ;delay_ms(2000);
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("-1000 +1000");
 	__POINTW2FN _0x0,249
-	CALL SUBOPT_0x23
+	CALL SUBOPT_0x21
 ;setMotor(-1000, 1000);
-	CALL SUBOPT_0x22
+	CALL SUBOPT_0x20
 ;delay_ms(2000);
 ;rem(1000);
 	LDI  R26,LOW(1000)
 	LDI  R27,HIGH(1000)
 	RCALL _rem
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;isChildSelect = false;
 _0x20C0008:
 	LDI  R30,LOW(0)
 	STS  _isChildSelect,R30
 ;changeMenu(0, false);
-	CALL SUBOPT_0x25
+	CALL SUBOPT_0x23
 	RET
 ; .FEND
 ;void test_tombol()
@@ -2988,7 +2982,7 @@ _test_tombol:
 ; .FSTART _test_tombol
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Click 1 to exit");
 	__POINTW2FN _0x0,261
 	CALL _lcd_putsf
@@ -3009,11 +3003,11 @@ _0x11C:
 	CALL SUBOPT_0x3
 ;lcd_putsf("tombol = 1     ");
 	__POINTW2FN _0x0,277
-	CALL SUBOPT_0x26
+	CALL SUBOPT_0x24
 ;isTestTombol = false;
 ;delay(500);
 ;changeMenu(0, false);
-	CALL SUBOPT_0x25
+	CALL SUBOPT_0x23
 ;if (t2 == 0)
 _0x120:
 	SBIC 0x13,1
@@ -3053,11 +3047,11 @@ _0x11E:
 _sens_warna:
 ; .FSTART _sens_warna
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;lcd_putsf("Sens Warna");
 	__POINTW2FN _0x0,125
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("Warna:");
 	__POINTW2FN _0x0,341
@@ -3068,7 +3062,7 @@ _sens_warna:
 ;bawah_lepas();
 	RCALL _bawah_lepas
 ;delay(200);
-	CALL SUBOPT_0x27
+	CALL SUBOPT_0x25
 ;ambil(20);
 	LDI  R26,LOW(20)
 	LDI  R27,0
@@ -3084,7 +3078,7 @@ _0x124:
 	CALL _lcd_clear
 	LDI  R30,LOW(230)
 	MOV  R13,R30
-	CALL SUBOPT_0x25
+	CALL SUBOPT_0x23
 	RJMP _0x126
 ;if ((t1 == 0))
 _0x127:
@@ -3095,7 +3089,7 @@ _0x127:
 	CALL SUBOPT_0x3
 ;lcd_putsf("Exiting...");
 	__POINTW2FN _0x0,348
-	CALL SUBOPT_0x26
+	CALL SUBOPT_0x24
 ;isTestTombol = false;
 ;delay(500);
 _0x128:
@@ -3107,11 +3101,11 @@ _0x126:
 _test_capit:
 ; .FSTART _test_capit
 ;lcd_clear();
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ;lcd_gotoxy(0, 0);
 ;lcd_putsf("Test Capit");
 	__POINTW2FN _0x0,359
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ;lcd_gotoxy(0, 1);
 ;lcd_putsf("Capit: > <");
 	__POINTW2FN _0x0,370
@@ -3125,7 +3119,7 @@ _test_capit:
 	RCALL _delay
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Capit: < >");
 	__POINTW2FN _0x0,381
 	CALL _lcd_putsf
@@ -3133,10 +3127,10 @@ _test_capit:
 	LDI  R30,LOW(230)
 	MOV  R13,R30
 ;delay(1000);
-	CALL SUBOPT_0x21
+	CALL SUBOPT_0x1E
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Capit: \\/");
 	__POINTW2FN _0x0,392
 	CALL _lcd_putsf
@@ -3144,10 +3138,10 @@ _test_capit:
 	LDI  R30,LOW(240)
 	MOV  R12,R30
 ;delay(1000);
-	CALL SUBOPT_0x21
+	CALL SUBOPT_0x1E
 ;lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
-	CALL SUBOPT_0x1A
+	CALL SUBOPT_0x19
 ;lcd_putsf("Capit: /\\");
 	__POINTW2FN _0x0,402
 	CALL _lcd_putsf
@@ -3155,7 +3149,7 @@ _test_capit:
 	LDI  R30,LOW(234)
 	MOV  R12,R30
 ;delay(1000);
-	CALL SUBOPT_0x21
+	CALL SUBOPT_0x1E
 	RET
 ; .FEND
 ;void tepuk_tangan() {
@@ -3187,7 +3181,9 @@ _display_map:
 	__POINTW1FN _0x0,12
 	ST   -Y,R31
 	ST   -Y,R30
-	CALL SUBOPT_0x18
+	LDI  R26,LOW(_mapMirror)
+	LDI  R27,HIGH(_mapMirror)
+	CALL __EEPROMRDW
 	CALL __CWD1
 _0x20C0006:
 	CALL __PUTPARD1
@@ -3443,7 +3439,7 @@ _main:
 	CALL SUBOPT_0x3
 ; 0000 00E9 lcd_putsf("     LEGION     ");
 	__POINTW2FN _0x0,430
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ; 0000 00EA lcd_gotoxy(0, 1);
 ; 0000 00EB lcd_putsf(" MAN 4 JOMBANG ");
 	__POINTW2FN _0x0,447
@@ -3469,7 +3465,9 @@ _main:
 ; 0000 00F5 /// mapMirror = 0 - map/lintasan bagian biru
 ; 0000 00F6 /// mapMirror = 1 - map/lintasan bagian merah
 ; 0000 00F7 if(mapMirror != map_biru && mapMirror != map_merah) mapMirror = map_biru;
-	CALL SUBOPT_0x18
+	LDI  R26,LOW(_mapMirror)
+	LDI  R27,HIGH(_mapMirror)
+	CALL __EEPROMRDW
 	SBIW R30,0
 	BREQ _0x143
 	CPI  R30,LOW(0x1)
@@ -3487,11 +3485,11 @@ _0x144:
 ; 0000 00F8 
 ; 0000 00F9 lcd_clear();
 _0x142:
-	CALL SUBOPT_0x1E
+	CALL SUBOPT_0x1B
 ; 0000 00FA lcd_gotoxy(0, 0);
 ; 0000 00FB lcd_putsf("Menu");
 	__POINTW2FN _0x0,100
-	CALL SUBOPT_0x1F
+	CALL SUBOPT_0x1C
 ; 0000 00FC lcd_gotoxy(0, 1);
 ; 0000 00FD lcd_putsf("Calibration");
 	__POINTW2FN _0x0,105
@@ -3522,7 +3520,7 @@ _0x148:
 	BRNE _0x14A
 	LDI  R26,LOW(_count_btn)
 	LDI  R27,HIGH(_count_btn)
-	CALL SUBOPT_0x28
+	CALL SUBOPT_0x26
 ; 0000 0109 if(count_btn >= 8) count_btn = 0;
 _0x14A:
 	LDS  R26,_count_btn
@@ -3534,9 +3532,9 @@ _0x14A:
 	STS  _count_btn+1,R30
 ; 0000 010A delay(200);
 _0x14B:
-	CALL SUBOPT_0x27
+	CALL SUBOPT_0x25
 ; 0000 010B changeMenu(count_btn, false);
-	CALL SUBOPT_0x29
+	CALL SUBOPT_0x27
 	LDI  R26,LOW(0)
 	RCALL _changeMenu
 ; 0000 010C }
@@ -3545,11 +3543,11 @@ _0x149:
 	SBIC 0x13,1
 	RJMP _0x14C
 ; 0000 010E changeMenu(count_btn, true);
-	CALL SUBOPT_0x29
+	CALL SUBOPT_0x27
 	LDI  R26,LOW(1)
 	RCALL _changeMenu
 ; 0000 010F delay(200);
-	CALL SUBOPT_0x27
+	CALL SUBOPT_0x25
 ; 0000 0110 }
 ; 0000 0111 }
 _0x14C:
@@ -3600,7 +3598,7 @@ _0x2000012:
 	LDD  R26,Y+2
 	LDD  R27,Y+2+1
 	ADIW R26,2
-	CALL SUBOPT_0x28
+	CALL SUBOPT_0x26
 	SBIW R30,1
 	LDD  R26,Y+4
 	STD  Z+0,R26
@@ -3610,7 +3608,7 @@ _0x2000013:
 	CALL __GETW1P
 	TST  R31
 	BRMI _0x2000014
-	CALL SUBOPT_0x28
+	CALL SUBOPT_0x26
 _0x2000014:
 	RJMP _0x2000015
 _0x2000010:
@@ -3659,7 +3657,7 @@ _0x2000016:
 	LDI  R17,LOW(1)
 	RJMP _0x200001E
 _0x200001D:
-	CALL SUBOPT_0x2A
+	CALL SUBOPT_0x28
 _0x200001E:
 	RJMP _0x200001B
 _0x200001C:
@@ -3667,7 +3665,7 @@ _0x200001C:
 	BRNE _0x200001F
 	CPI  R18,37
 	BRNE _0x2000020
-	CALL SUBOPT_0x2A
+	CALL SUBOPT_0x28
 	RJMP _0x20000CC
 _0x2000020:
 	LDI  R17,LOW(2)
@@ -3724,26 +3722,26 @@ _0x2000029:
 	MOV  R30,R18
 	CPI  R30,LOW(0x63)
 	BRNE _0x200002F
-	CALL SUBOPT_0x2B
+	CALL SUBOPT_0x29
 	LDD  R30,Y+16
 	LDD  R31,Y+16+1
 	LDD  R26,Z+4
 	ST   -Y,R26
-	CALL SUBOPT_0x2C
+	CALL SUBOPT_0x2A
 	RJMP _0x2000030
 _0x200002F:
 	CPI  R30,LOW(0x73)
 	BRNE _0x2000032
+	CALL SUBOPT_0x29
 	CALL SUBOPT_0x2B
-	CALL SUBOPT_0x2D
 	CALL _strlen
 	MOV  R17,R30
 	RJMP _0x2000033
 _0x2000032:
 	CPI  R30,LOW(0x70)
 	BRNE _0x2000035
+	CALL SUBOPT_0x29
 	CALL SUBOPT_0x2B
-	CALL SUBOPT_0x2D
 	CALL _strlenf
 	MOV  R17,R30
 	ORI  R16,LOW(8)
@@ -3788,7 +3786,7 @@ _0x2000040:
 _0x200003D:
 	SBRS R16,2
 	RJMP _0x2000042
-	CALL SUBOPT_0x2B
+	CALL SUBOPT_0x29
 	LDD  R26,Y+16
 	LDD  R27,Y+16+1
 	ADIW R26,4
@@ -3813,7 +3811,7 @@ _0x2000044:
 _0x2000045:
 	RJMP _0x2000046
 _0x2000042:
-	CALL SUBOPT_0x2B
+	CALL SUBOPT_0x29
 	LDD  R26,Y+16
 	LDD  R27,Y+16+1
 	ADIW R26,4
@@ -3842,7 +3840,7 @@ _0x200004D:
 _0x200004B:
 	LDI  R18,LOW(32)
 _0x200004E:
-	CALL SUBOPT_0x2A
+	CALL SUBOPT_0x28
 	SUBI R21,LOW(1)
 	RJMP _0x2000048
 _0x200004A:
@@ -3868,7 +3866,7 @@ _0x2000053:
 	STD  Y+6,R26
 	STD  Y+6+1,R27
 _0x2000054:
-	CALL SUBOPT_0x2A
+	CALL SUBOPT_0x28
 	CPI  R21,0
 	BREQ _0x2000055
 	SUBI R21,LOW(1)
@@ -3947,7 +3945,7 @@ _0x20000CD:
 	RJMP _0x200006A
 	ANDI R16,LOW(251)
 	ST   -Y,R20
-	CALL SUBOPT_0x2C
+	CALL SUBOPT_0x2A
 	CPI  R21,0
 	BREQ _0x200006B
 	SUBI R21,LOW(1)
@@ -3955,7 +3953,7 @@ _0x200006B:
 _0x200006A:
 _0x2000069:
 _0x2000061:
-	CALL SUBOPT_0x2A
+	CALL SUBOPT_0x28
 	CPI  R21,0
 	BREQ _0x200006C
 	SUBI R21,LOW(1)
@@ -3977,7 +3975,7 @@ _0x200006E:
 	SUBI R21,LOW(1)
 	LDI  R30,LOW(32)
 	ST   -Y,R30
-	CALL SUBOPT_0x2C
+	CALL SUBOPT_0x2A
 	RJMP _0x200006E
 _0x2000070:
 _0x200006D:
@@ -4363,19 +4361,19 @@ _lcd_init:
 	LD   R30,Y
 	SUBI R30,-LOW(192)
 	__PUTB1MN __base_y_G103,3
-	CALL SUBOPT_0x2E
-	CALL SUBOPT_0x2E
-	CALL SUBOPT_0x2E
+	CALL SUBOPT_0x2C
+	CALL SUBOPT_0x2C
+	CALL SUBOPT_0x2C
 	RCALL __long_delay_G103
 	LDI  R26,LOW(32)
 	RCALL __lcd_init_write_G103
 	RCALL __long_delay_G103
 	LDI  R26,LOW(40)
-	CALL SUBOPT_0x2F
+	CALL SUBOPT_0x2D
 	LDI  R26,LOW(4)
-	CALL SUBOPT_0x2F
+	CALL SUBOPT_0x2D
 	LDI  R26,LOW(133)
-	CALL SUBOPT_0x2F
+	CALL SUBOPT_0x2D
     in    r26,__lcd_direction
     andi  r26,0xf                 ;set as input
     out   __lcd_direction,r26
@@ -4598,7 +4596,7 @@ SUBOPT_0xC:
 	CALL __EEPROMRDW
 	RET
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:11 WORDS
+;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:4 WORDS
 SUBOPT_0xD:
 	ST   -Y,R26
 	LD   R30,Y
@@ -4618,14 +4616,8 @@ SUBOPT_0xE:
 	CALL __CPW02
 	RET
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0xF:
-	LD   R26,Y
-	LDD  R27,Y+1
-	JMP  _delay
-
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:5 WORDS
-SUBOPT_0x10:
+SUBOPT_0xF:
 	LD   R30,Y
 	LDD  R31,Y+1
 	CALL __CWD1
@@ -4633,39 +4625,39 @@ SUBOPT_0x10:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x11:
+SUBOPT_0x10:
 	CALL __CFD1
 	ST   X+,R30
 	ST   X,R31
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 5 TIMES, CODE SIZE REDUCTION:5 WORDS
-SUBOPT_0x12:
+SUBOPT_0x11:
 	LDS  R30,_sensor
 	LDS  R31,_sensor+1
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x13:
+SUBOPT_0x12:
 	LDS  R30,_MAX_SPEED
 	LDS  R31,_MAX_SPEED+1
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x14:
+SUBOPT_0x13:
 	LDS  R30,_MIN_SPEED
 	LDS  R31,_MIN_SPEED+1
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x15:
-	RCALL SUBOPT_0x12
+SUBOPT_0x14:
+	RCALL SUBOPT_0x11
 	ANDI R30,LOW(0x1C)
 	CPI  R30,LOW(0x1C)
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:2 WORDS
-SUBOPT_0x16:
+SUBOPT_0x15:
 	LDD  R30,Y+2
 	ST   -Y,R30
 	LDD  R26,Y+3
@@ -4673,22 +4665,25 @@ SUBOPT_0x16:
 	JMP  _cek_sensor
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:2 WORDS
-SUBOPT_0x17:
+SUBOPT_0x16:
 	LDD  R30,Y+2
 	ST   -Y,R30
 	LDD  R26,Y+3
 	CALL _kanan
 	JMP  _cek_sensor
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x18:
+;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:2 WORDS
+SUBOPT_0x17:
+	ST   -Y,R27
+	ST   -Y,R26
 	LDI  R26,LOW(_mapMirror)
 	LDI  R27,HIGH(_mapMirror)
 	CALL __EEPROMRDW
+	SBIW R30,0
 	RET
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x19:
+;OPTIMIZER ADDED SUBROUTINE, CALLED 4 TIMES, CODE SIZE REDUCTION:9 WORDS
+SUBOPT_0x18:
 	LDD  R30,Y+2
 	LDD  R31,Y+2+1
 	ST   -Y,R31
@@ -4698,51 +4693,40 @@ SUBOPT_0x19:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 23 TIMES, CODE SIZE REDUCTION:41 WORDS
-SUBOPT_0x1A:
+SUBOPT_0x19:
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	JMP  _lcd_gotoxy
 
-;OPTIMIZER ADDED SUBROUTINE, CALLED 5 TIMES, CODE SIZE REDUCTION:5 WORDS
-SUBOPT_0x1B:
-	LDI  R30,LOW(1000)
-	LDI  R31,HIGH(1000)
+;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:7 WORDS
+SUBOPT_0x1A:
 	ST   -Y,R31
 	ST   -Y,R30
-	RET
-
-;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:3 WORDS
-SUBOPT_0x1C:
-	ST   -Y,R31
-	ST   -Y,R30
-	LDI  R26,LOW(1000)
-	LDI  R27,HIGH(1000)
+	LDI  R26,LOW(2000)
+	LDI  R27,HIGH(2000)
 	CALL _scanX
-	RJMP SUBOPT_0x1B
-
-;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x1D:
+	LDI  R30,LOW(2000)
+	LDI  R31,HIGH(2000)
+	ST   -Y,R31
+	ST   -Y,R30
 	LDI  R26,LOW(200)
 	LDI  R27,0
-	CALL _belokKanan
-	LDI  R30,LOW(5)
-	LDI  R31,HIGH(5)
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 7 TIMES, CODE SIZE REDUCTION:15 WORDS
-SUBOPT_0x1E:
+SUBOPT_0x1B:
 	CALL _lcd_clear
 	LDI  R30,LOW(0)
 	RJMP SUBOPT_0x3
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 6 TIMES, CODE SIZE REDUCTION:12 WORDS
-SUBOPT_0x1F:
+SUBOPT_0x1C:
 	CALL _lcd_putsf
 	LDI  R30,LOW(0)
-	RJMP SUBOPT_0x1A
+	RJMP SUBOPT_0x19
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:5 WORDS
-SUBOPT_0x20:
+SUBOPT_0x1D:
 	LDI  R30,LOW(0)
 	STS  _isChildSelect,R30
 	LDI  R30,LOW(0)
@@ -4753,13 +4737,22 @@ SUBOPT_0x20:
 	JMP  _changeMenu
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 5 TIMES, CODE SIZE REDUCTION:5 WORDS
-SUBOPT_0x21:
+SUBOPT_0x1E:
 	LDI  R26,LOW(1000)
 	LDI  R27,HIGH(1000)
 	JMP  _delay
 
+;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
+SUBOPT_0x1F:
+	CALL _lcd_putsf
+	LDI  R30,LOW(1000)
+	LDI  R31,HIGH(1000)
+	ST   -Y,R31
+	ST   -Y,R30
+	RET
+
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:3 WORDS
-SUBOPT_0x22:
+SUBOPT_0x20:
 	LDI  R26,LOW(1000)
 	LDI  R27,HIGH(1000)
 	CALL _setMotor
@@ -4768,7 +4761,7 @@ SUBOPT_0x22:
 	JMP  _delay_ms
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x23:
+SUBOPT_0x21:
 	CALL _lcd_putsf
 	LDI  R30,LOW(64536)
 	LDI  R31,HIGH(64536)
@@ -4777,7 +4770,7 @@ SUBOPT_0x23:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:6 WORDS
-SUBOPT_0x24:
+SUBOPT_0x22:
 	LDI  R26,LOW(64536)
 	LDI  R27,HIGH(64536)
 	CALL _setMotor
@@ -4785,10 +4778,10 @@ SUBOPT_0x24:
 	LDI  R27,HIGH(2000)
 	CALL _delay_ms
 	LDI  R30,LOW(0)
-	RJMP SUBOPT_0x1A
+	RJMP SUBOPT_0x19
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:7 WORDS
-SUBOPT_0x25:
+SUBOPT_0x23:
 	LDI  R30,LOW(0)
 	LDI  R31,HIGH(0)
 	ST   -Y,R31
@@ -4797,7 +4790,7 @@ SUBOPT_0x25:
 	JMP  _changeMenu
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:4 WORDS
-SUBOPT_0x26:
+SUBOPT_0x24:
 	CALL _lcd_putsf
 	LDI  R30,LOW(0)
 	STS  _isTestTombol,R30
@@ -4806,13 +4799,13 @@ SUBOPT_0x26:
 	JMP  _delay
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x27:
+SUBOPT_0x25:
 	LDI  R26,LOW(200)
 	LDI  R27,0
 	JMP  _delay
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:3 WORDS
-SUBOPT_0x28:
+SUBOPT_0x26:
 	LD   R30,X+
 	LD   R31,X+
 	ADIW R30,1
@@ -4821,7 +4814,7 @@ SUBOPT_0x28:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x29:
+SUBOPT_0x27:
 	LDS  R30,_count_btn
 	LDS  R31,_count_btn+1
 	ST   -Y,R31
@@ -4829,7 +4822,7 @@ SUBOPT_0x29:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 5 TIMES, CODE SIZE REDUCTION:13 WORDS
-SUBOPT_0x2A:
+SUBOPT_0x28:
 	ST   -Y,R18
 	LDD  R26,Y+13
 	LDD  R27,Y+13+1
@@ -4839,7 +4832,7 @@ SUBOPT_0x2A:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 5 TIMES, CODE SIZE REDUCTION:9 WORDS
-SUBOPT_0x2B:
+SUBOPT_0x29:
 	LDD  R30,Y+16
 	LDD  R31,Y+16+1
 	SBIW R30,4
@@ -4848,7 +4841,7 @@ SUBOPT_0x2B:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:3 WORDS
-SUBOPT_0x2C:
+SUBOPT_0x2A:
 	LDD  R26,Y+13
 	LDD  R27,Y+13+1
 	LDD  R30,Y+15
@@ -4857,7 +4850,7 @@ SUBOPT_0x2C:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:4 WORDS
-SUBOPT_0x2D:
+SUBOPT_0x2B:
 	LDD  R26,Y+16
 	LDD  R27,Y+16+1
 	ADIW R26,4
@@ -4870,13 +4863,13 @@ SUBOPT_0x2D:
 	RET
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:3 WORDS
-SUBOPT_0x2E:
+SUBOPT_0x2C:
 	CALL __long_delay_G103
 	LDI  R26,LOW(48)
 	JMP  __lcd_init_write_G103
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 3 TIMES, CODE SIZE REDUCTION:1 WORDS
-SUBOPT_0x2F:
+SUBOPT_0x2D:
 	CALL __lcd_write_data
 	JMP  __long_delay_G103
 

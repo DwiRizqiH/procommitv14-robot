@@ -1,9 +1,7 @@
 void Program_Jalan() {
-    maju_delay(1000, 400);
-    
-    scanX(1, 1000); belokKanan(1000, 200);
-    scanX(5, 1000); belokKanan(1000, 200);
-    scanX(5, 1000);
+    scanX(1, 2000); belokKiri(2000, 200);
+    scanX(5, 2000); belokKanan(2000, 200);
+    scanX(5, 2000); rem(200);
 }
 
 void balikKanan() {
