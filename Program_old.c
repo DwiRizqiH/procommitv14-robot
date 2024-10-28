@@ -2,7 +2,7 @@
 This program was produced by the
 CodeWizardAVR V2.05.3 Standard
 Automatic Program Generator
-© Copyright 1998-2011 Pavel Haiduc, HP InfoTech s.r.l.
+ï¿½ Copyright 1998-2011 Pavel Haiduc, HP InfoTech s.r.l.
 http://www.hpinfotech.com
                                                                 q
 Project : 
@@ -355,6 +355,33 @@ void maju(unsigned char ki,unsigned char ka)
         PORTD.6=0;
         PORTD.7=1;        
 } 
+
+void setMotor(int ki, int ka)
+{
+    pwmki = abs(ki);
+    if (ki > 0)
+    {
+        PORTD.2 = 1;
+        PORTD.3 = 0;
+    }
+    else
+    {
+        PORTD.2 = 0;
+        PORTD.3 = 1;
+    }
+
+    pwmka = abs(ka);
+    if (ka > 0)
+    {
+        PORTD.7 = 1;
+        PORTD.6 = 0;
+    }
+    else
+    {
+        PORTD.7 = 0;
+        PORTD.6 = 1;
+    }
+}
 
 void mundur(unsigned char ki,unsigned char ka)
 {
@@ -971,30 +998,31 @@ while (1)
         
         if(t1==0)
        {       
+            setMotor(1000, 1000);
             ///PORGRAM TES BACA WARNA    
-            lengan_bawah;
-            while(1){               
-             bacawarna();
-             if(hasilwarna=='K'){
-                 lcd_gotoxy(0,0);lcd_putsf("KUNING   "); 
+            // lengan_bawah;
+            // while(1){               
+            //  bacawarna();
+            //  if(hasilwarna=='K'){
+            //      lcd_gotoxy(0,0);lcd_putsf("KUNING   "); 
                  
-             }
+            //  }
              
-             else if(hasilwarna=='B'){
-                 lcd_gotoxy(0,0);lcd_putsf("BIRU     ");
-                 //progam biru 
-             }
+            //  else if(hasilwarna=='B'){
+            //      lcd_gotoxy(0,0);lcd_putsf("BIRU     ");
+            //      //progam biru 
+            //  }
              
-             else if(hasilwarna=='M'){
-                 lcd_gotoxy(0,0);lcd_putsf("MERAH    ");
-                 //progam merah 
-             }
+            //  else if(hasilwarna=='M'){
+            //      lcd_gotoxy(0,0);lcd_putsf("MERAH    ");
+            //      //progam merah 
+            //  }
              
-             else if(hasilwarna=='H'){
-                 lcd_gotoxy(0,0);lcd_putsf("HIJAU    ");
-                 //progam hijau 
-             }
-            }
+            //  else if(hasilwarna=='H'){
+            //      lcd_gotoxy(0,0);lcd_putsf("HIJAU    ");
+            //      //progam hijau 
+            //  }
+            // }
        
        
        
@@ -1007,64 +1035,75 @@ while (1)
           if (mulai>=20)mulai=0;}         
             
         if(t3==0)  
-        {  lcd_clear(); lampu=1;
-            while(1)
-            {   switch(mulai)
-                {
-                 case 1: goto satu3; break;
-                 case 2: goto dua3; break;
-                 case 3: goto tiga3; break;
-                 case 4: goto empat3; break;
-                 case 5: goto lima3; break; 
-                 case 6: goto enam3; break;
-                 case 7: goto tujuh3; break;
-                 case 8: goto delapan3; break;
-                 case 9: goto sembilan3; break; 
-                 case 10: goto sepuluh3; break;
-                }  
+        {  lcd_clear(); lampu=1; maju(1000,1000);
+        //     while(1)
+        //     {   switch(mulai)
+        //         {
+        //          case 1: goto satu3; break;
+        //          case 2: goto dua3; break;
+        //          case 3: goto tiga3; break;
+        //          case 4: goto empat3; break;
+        //          case 5: goto lima3; break; 
+        //          case 6: goto enam3; break;
+        //          case 7: goto tujuh3; break;
+        //          case 8: goto delapan3; break;
+        //          case 9: goto sembilan3; break; 
+        //          case 10: goto sepuluh3; break;
+        //         }
                 
                     
-                satu3: 
-                    while(1){
-                      
-                     }
+        //         satu3: 
+        //              scanX(1, 180);
+        //              rem(1000);
+        //              belki(170,170);
+        //              rem(1000);
+        //              scanX(5, 180);
+        //              rem(1000);
+        //              belka(170,170);
+        //              rem(1000);
+        //              scanX(5, 180);
+        //              rem(1000);
+        //              mundur(150,1000);
+        //              belka(170,170);
+        //              rem(1000);
+        //              scanX(3, 180);
+        //              rem(1000);
+        //              belki(170,170);
+        //              rem(1000);
+        //              scanX(3, 180);
+        //              rem(1000);
+        //              belka(170,170);
+        //              rem(1000);
+        //              belki(170,170);
+        //              rem(1000);
+        //              scanX(2, 180);
+        //              rem(1000);
+        //              belka(170,170);
+        //              rem(1000);
+        //              scanX(1, 100);
+        //              parkir();
+                   
                      
-                dua3:  
-                    while(1){ 
-                    
-                    }
+        //         dua3:  
                        
-                tiga3:
-                      while(1){
-                        scan0rem(170);
-                    }
-                empat3:
-                    while(1){
-                        scanX(2,150);
-                        parkir();
-                    }
-                lima3:
-                while(1){
-                        scanX(1,150);
-                        parkir();
-                    }
+        //         tiga3:
                   
-                enam3:
+        //         empat3:
+                  
+        //         lima3:
+                 
+        //         enam3:
              
-                tujuh3:
-                    while(1){
-                        bacawarna();
-                    }
-                delapan3:
-                    while(1){ 
-                       
+        //         tujuh3:
+                
+        //         delapan3:
+                
+        //         sembilan3:
                     
-                    }
-                sembilan3:
+        //         sepuluh3:  
                     
-                sepuluh3:  
-                    
-            }  
+        //     }  
+        // }
         }
         
         if(t4==0)  //start BIRU
@@ -1131,60 +1170,24 @@ while (1)
                      //kosong   156
                      //merah   51
                     if(nilai_warna>225 && nilai_warna<235){//jika kuning
-                       //program ketika mendapatkan pondasi warna kuning
-                       capit_ambil;
-                       mundur(180,180);
-                       rem(3000);
-                       belki(180,180);
-                       rem(500);
+                       //program warna kuning
+                       
                        scanX(1,180);
                        rem(500);
-                       lengan_bawah;
-                       rem(500);
-                       capit_lepas;
-                       rem(100);
-                       lengan_atas;
-                       parkir(); //hapus untuk melanjutkan
-//                       mundur(180,180);
-//                       rem(2000);
-//                       belka(180,180);
-//                       rem(500);
-//                       scanX(3,180);
-//                       rem(500);
-                       //goto dua4;
+                       parkir(); 
                      
                      }
                    
                    
-                    if(nilai_warna>150 && nilai_warna<160){ //kosong
-                        //program ketika tidak ada kubus 
-                        parkir(); //hapus untuk menuliskan algoritma jika tidak ada kubus
-                       //
-                       //
-                       //
+                    if(nilai_warna>150 && nilai_warna<160){ 
+                       
                      
                      }
-               
-                 
-//                           goto tiga4;
                            
                  
                     if(nilai_warna>5 && nilai_warna<25){  //Jika Hijau
-                        //program ketika mendapatkan kubus warna hijau
-                       capit_ambil; 
-                       rem(500);
-                       lengan_atas;
-                       rem(500); 
-                       mundur(180,180);
-                       rem(5000);
-                       belka(180,180);
-                       rem(500);
-                       scanX(2,180);
-                       rem(500);
-                       lengan_bawah;
-                       rem(500);
-                       capit_lepas;
-                       parkir();
+                        //program ketika warna hijau
+                       
                    } 
                     
                       

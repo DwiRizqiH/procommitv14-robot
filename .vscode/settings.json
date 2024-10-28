@@ -4,5 +4,9 @@
     "code-runner.executorMap": {
         "c": "C:/cvavr/BIN/cvavrcl.exe Program.prj -ba -rw"
     },
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "*.ejs": "html",
+        "string.h": "c"
+    }
 }
