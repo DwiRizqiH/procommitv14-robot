@@ -250,13 +250,14 @@ void main(void)
     lcd_gotoxy(0, 0);
     lcd_putsf("Menu");
     lcd_gotoxy(0, 1);
-    lcd_putsf("Calibration");
+    lcd_putsf("Kalibrasi");
 
     while(1) {
         if(!isChildSelect) {
             display_sensor();
             bacawarna();
             display_map();
+            display_checkpoint();
         }
 
         if((t1 == 0)) {
@@ -268,6 +269,33 @@ void main(void)
         }
         if((t2 == 0)) {
             changeMenu(count_btn, true);
+            delay(200);
+        }
+        if((t3 == 0)) {
+            if(!ringPos) {
+                ringPos = 1;
+            } else {
+                ringPos += 1;
+            }
+
+            if((ringPos > 3) && (pointPos != 'Z')) {
+                ringPos = 1;
+            } else if((ringPos > 3) && (pointPos == 'Z')) {
+                ringPos = 4;
+            }
+            delay(200);
+        }
+        if((t4 == 0)) {
+            if(pointPos == 'A') {
+                pointPos = 'B';
+                if(ringPos == 4) ringPos = 1;
+            } else if(pointPos == 'B') {
+                pointPos = 'Z';
+                ringPos = 4;
+            } else {
+                pointPos = 'A';
+                ringPos = 1;
+            }
             delay(200);
         }
     }

@@ -21,7 +21,7 @@ void changeMenu(int menuSelect, bool isSelect) {
         case 0: // Calibration
             if(isSelect) { calibration(); break; }
             lcd_gotoxy(0, 1);
-            lcd_putsf("Calibration");
+            lcd_putsf("Kalibrasi");
             break;
         case 1: // Run bot
             if(isSelect || isChildSelect) { runBot(); break; }
@@ -263,6 +263,15 @@ void display_map() {
     cek_sensor();
     lcd_gotoxy(7, 0);
     sprintf(buff, "%d", mapMirror);
+    lcd_puts(buff);
+}
+
+void display_checkpoint() {
+    if(pointPos != 'A' && pointPos != 'B' && pointPos != 'Z') pointPos = 'A';
+    if(ringPos != 1 && ringPos != 2 && ringPos != 3 && ringPos != 4) ringPos = 1;
+
+    lcd_gotoxy(10, 1);
+    sprintf(buff, "%c%d", pointPos, ringPos);
     lcd_puts(buff);
 }
 
