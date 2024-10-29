@@ -278,7 +278,9 @@ void main(void)
                 ringPos += 1;
             }
 
-            if((ringPos > 3) && (pointPos != 'Z')) {
+            if((ringPos > 2) && (pointPos == 'O')) {
+                ringPos = 1;
+            } else if((ringPos > 3) && (pointPos != 'Z')) {
                 ringPos = 1;
             } else if((ringPos > 3) && (pointPos == 'Z')) {
                 ringPos = 4;
@@ -286,14 +288,16 @@ void main(void)
             delay(200);
         }
         if((t4 == 0)) {
-            if(pointPos == 'A') {
+            if(pointPos == 'O') {
+                pointPos = 'A';
+            } else if(pointPos == 'A') {
                 pointPos = 'B';
                 if(ringPos == 4) ringPos = 1;
             } else if(pointPos == 'B') {
                 pointPos = 'Z';
                 ringPos = 4;
             } else {
-                pointPos = 'A';
+                pointPos = 'O';
                 ringPos = 1;
             }
             delay(200);

@@ -267,7 +267,7 @@ void display_map() {
 }
 
 void display_checkpoint() {
-    if(pointPos != 'A' && pointPos != 'B' && pointPos != 'Z') pointPos = 'A';
+    if(pointPos != 'O' && pointPos != 'A' && pointPos != 'B' && pointPos != 'Z') pointPos = 'O';
     if(ringPos != 1 && ringPos != 2 && ringPos != 3 && ringPos != 4) ringPos = 1;
 
     lcd_gotoxy(10, 1);
