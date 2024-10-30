@@ -24,17 +24,17 @@ void Program_Jalan() {
         else if(ringPos == 3) scanX(1, 2000);
 
         // check warna / 0 = putih / 1 = orange
-        // simulate 0
+        // simulate 1
         // isWarna = checkWarna();
-        isWarna = 0;
+        isWarna = 1;
 
-        // to Reload
+        // to ring
         if(isWarna == 0) {
             belokKiri(2000, 200);
-            scanX(1, 2000); rem(200);
+            scanX(1, 2000); mundur(2000, 2000); delay(50); rem(200);
         } else if(isWarna == 1) {
             belokKanan(2000, 200);
-            scanX(1, 2000); rem(200);
+            scanX(1, 2000); mundur(2000, 2000); delay(50); rem(200);
         }
 
 
@@ -43,10 +43,37 @@ void Program_Jalan() {
 
 
 
-        // to reload
+        // back position
         mundur(2000, 2000); delay(350);
         if(isWarna == 0) belokKiri(3500, 200);
         else if(isWarna == 1) belokKanan(3500, 200);
+
+        while (ringPos < 3) {
+            ringPos++;
+            scanX(2, 2000);
+
+            // Check warna / 0 = putih / 1 = orange
+            // Simulate 0 for testing
+            // isWarna = checkWarna();
+            isWarna = 0;
+
+            // To Reload
+            if (isWarna == 0) {
+                belokKanan(2000, 200);
+                scanX(1, 2000); mundur(2000, 2000); delay(50); rem(200);
+            } else if (isWarna == 1) {
+                belokKiri(2000, 200);
+                scanX(1, 2000); mundur(2000, 2000); delay(50); rem(200);
+            }
+
+            // Back position
+            mundur(2000, 2000); delay(350);
+            if (isWarna == 0) {
+                belokKiri(3500, 200);
+            } else if (isWarna == 1) {
+                belokKanan(3500, 200);
+            }
+        }
 
         if(ringPos == 1) scanX(5, 2000);
         else if(ringPos == 2) scanX(3, 2000);
@@ -55,7 +82,6 @@ void Program_Jalan() {
         belokKiri(2000, 200);
         if((pointPos == 'A')) fromAToReload();
         else if((pointPos == 'B')) fromBToReload();
-        mundur(2000, 2000); delay(50); rem(200);
     }
     else if(pointPos == 'Z') {
         // servo stuff
@@ -70,9 +96,11 @@ void Program_Jalan() {
 
 void fromReloadToA() {
     scanX(5, 2000); belokKanan(2000, 200);
+    mundur(2000, 2000); delay(50); rem(200);
 }
 void fromReloadToB() {
     scanX(2, 2000); belokKanan(2000, 200);
+    mundur(2000, 2000); delay(50); rem(200);
 }
 void fromReloadToZ() {
     scanX(2, 2000); belokKanan(2000, 200);
