@@ -96,11 +96,9 @@ void Program_Jalan() {
 
 void fromReloadToA() {
     scanX(5, 2000); belokKanan(2000, 200);
-    mundur(2000, 2000); delay(50); rem(200);
 }
 void fromReloadToB() {
     scanX(2, 2000); belokKanan(2000, 200);
-    mundur(2000, 2000); delay(50); rem(200);
 }
 void fromReloadToZ() {
     scanX(2, 2000); belokKanan(2000, 200);
@@ -109,9 +107,11 @@ void fromReloadToZ() {
 
 void fromAToReload() {
     scanX(5, 2000);
+    mundur(2000, 2000); delay(50); rem(200);
 }
 void fromBToReload() {
     scanX(2, 2000);
+    mundur(2000, 2000); delay(50); rem(200);
 }
 
 void balikKanan() {
