@@ -1,6 +1,7 @@
 
 int positionD = 0;
-eeprom int mapMirror; // 0 - map/lintasan bagian biru, 1 - map/lintasan bagian merah
+eeprom int mapMirror; // 1 - map/lintasan bagian biru, 0 - map/lintasan bagian merah
+eeprom char startPos; // H - home, R - Reload
 eeprom char pointPos;
 eeprom int ringPos;
 

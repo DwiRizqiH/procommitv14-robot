@@ -1,6 +1,7 @@
 // declare variable
 void runBot(void);
 void calibration(void);
+void change_startPos(void);
 void Program_Jalan(void);
 void test_motor(void);
 void test_tombol(void);
@@ -28,32 +29,37 @@ void changeMenu(int menuSelect, bool isSelect) {
             lcd_gotoxy(0, 1);
             lcd_putsf("Run Bot");
             break;
-        case 2: // Sensor Warna
+        case 2: //Change Home or Reload
+            if(isSelect) { change_startPos(); break; }
+            lcd_gotoxy(0, 1);
+            lcd_putsf("StartPos");
+            break;
+        case 3: // Sensor Warna
             if(isSelect) { sens_warna(); break; }
             lcd_gotoxy(0, 1);
-            lcd_putsf("Sens Warna");
-            break;
-        case 3: // Map Select
-            if(isSelect || isChildSelect) { map_select(map_biru); break; }
-            lcd_gotoxy(0, 1);
-            lcd_putsf("Map Biru");
+            lcd_putsf("Warna");
             break;
         case 4: // Map Select
+            if(isSelect || isChildSelect) { map_select(map_biru); break; }
+            lcd_gotoxy(0, 1);
+            lcd_putsf("Map Blue");
+            break;
+        case 5: // Map Select
             if(isSelect || isChildSelect) { map_select(map_merah); break; }
             lcd_gotoxy(0, 1);
-            lcd_putsf("Map Merah");
+            lcd_putsf("Map Red");
             break;
-        case 5: // Test Motor
+        case 6: // Test Motor
             if(isSelect) { test_motor(); break; }
             lcd_gotoxy(0, 1);
             lcd_putsf("Motor");
             break;
-        case 6: // Test tombol
+        case 7: // Test tombol
             if(isSelect) { test_tombol(); break; }
             lcd_gotoxy(0, 1);
             lcd_putsf("Button");
             break;
-        case 7: // Test Capit
+        case 8: // Test Capit
             if(isSelect) { test_capit(); break; }
             lcd_gotoxy(0, 1);
             lcd_putsf("Capit");
@@ -94,8 +100,16 @@ void calibration() {
     changeMenu(0, false);
 }
 
+void change_startPos() {
+    if(startPos == 'H') {
+        startPos = 'R';
+    } else {
+        startPos = 'H';
+    }
+}
+
 void map_select(int map_num) {
-    // map_num = 0 - map/lintasan bagian biru, 1 - map/lintasan bagian merah
+    // map_num = 1 - map/lintasan bagian biru, 0 - map/lintasan bagian merah
     if(map_num != 0 && map_num != 1) map_num = 0;
     mapMirror = map_num;
 
@@ -185,7 +199,7 @@ void sens_warna()
 {
     lcd_clear();
     lcd_gotoxy(0, 0);
-    lcd_putsf("Sens Warna");
+    lcd_putsf("Warna");
 
     lcd_gotoxy(0, 1);
     lcd_putsf("Warna:");
@@ -267,12 +281,17 @@ void display_map() {
 }
 
 void display_checkpoint() {
-    if(pointPos != 'O' && pointPos != 'A' && pointPos != 'B' && pointPos != 'Z') pointPos = 'O';
+    if(pointPos != 'A' && pointPos != 'B' && pointPos != 'Z') pointPos = 'A';
     if(ringPos != 1 && ringPos != 2 && ringPos != 3 && ringPos != 4) ringPos = 1;
+    if(startPos != 'H' && startPos != 'R') startPos = 'H';
 
     lcd_gotoxy(10, 1);
     sprintf(buff, "%c%d", pointPos, ringPos);
     lcd_puts(buff);
+
+    lcd_gotoxy(5, 0);
+    if(startPos == 'H') lcd_putsf("H");
+    else lcd_putsf("R");
 }
 
 void tes_sensor()

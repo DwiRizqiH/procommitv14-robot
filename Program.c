@@ -31,8 +31,8 @@
 #define         kuning          1
 #define         hijau           2
 
-#define         map_biru        0
-#define         map_merah       1      
+#define         map_biru        1
+#define         map_merah       0  
 
 
 // Alphanumeric LCD Module functions
@@ -244,7 +244,7 @@ void main(void)
 
     /// mapMirror = 0 - map/lintasan bagian biru
     /// mapMirror = 1 - map/lintasan bagian merah
-    if(mapMirror != map_biru && mapMirror != map_merah) mapMirror = map_biru;
+    if(mapMirror != map_biru && mapMirror != map_merah) mapMirror = map_merah;
 
     lcd_clear();
     lcd_gotoxy(0, 0);
@@ -271,6 +271,7 @@ void main(void)
             changeMenu(count_btn, true);
             delay(200);
         }
+
         if((t3 == 0)) {
             if(!ringPos) {
                 ringPos = 1;
@@ -278,26 +279,23 @@ void main(void)
                 ringPos += 1;
             }
 
-            if((ringPos > 2) && (pointPos == 'O')) {
-                ringPos = 1;
-            } else if((ringPos > 3) && (pointPos != 'Z')) {
+            if((ringPos > 3) && (pointPos != 'Z')) {
                 ringPos = 1;
             } else if((ringPos > 3) && (pointPos == 'Z')) {
                 ringPos = 4;
             }
             delay(200);
-        }
+        } 
+        
         if((t4 == 0)) {
-            if(pointPos == 'O') {
-                pointPos = 'A';
-            } else if(pointPos == 'A') {
+            if(pointPos == 'A') {
                 pointPos = 'B';
                 if(ringPos == 4) ringPos = 1;
             } else if(pointPos == 'B') {
                 pointPos = 'Z';
                 ringPos = 4;
             } else {
-                pointPos = 'O';
+                pointPos = 'A';
                 ringPos = 1;
             }
             delay(200);

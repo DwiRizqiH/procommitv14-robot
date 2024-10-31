@@ -122,11 +122,11 @@ WarningExternalDeclaredNeverDefined=1
 WarningUnknownPragma=1
 DebugBootLoader=0
 WatchAVR8LAutoVariables=0
-Build=93
+Build=116
 UseEEPROMLocation0=1
-COFFileTimeStamp=1499359853
+COFFileTimeStamp=1499425017
 GlobalVarAddr=442
-EEPROMVarAddr=47
+EEPROMVarAddr=48
 [Assembler]
 OutputFormat=1
 [Libraries]
@@ -252,7 +252,7 @@ Blocks=0
 [FoldedCode1]
 Blocks=0
 [CompilerDebug]
-Build=93
+Build=116
 [BuildInfoCompiler]
 L1=Build configuration: Release
 L2=Chip: ATmega16
@@ -270,8 +270,8 @@ L13=Enhanced function parameters passing: Mode 1
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 93
-L18=15455 line(s) compiled
+L17=Build: 116
+L18=15505 line(s) compiled
 L19=No errors
 L20=25 warning(s)
 L21=
@@ -290,9 +290,9 @@ L33=
 L34=Heap size: 0 byte(s)
 L35=
 Lines=38
-L36=EEPROM usage: 47 byte(s), 9.2% of EEPROM
-L37=Program size: 3876 words (7752 bytes), 47.3% of FLASH
-L38=497 words (994 bytes), 11.4% reduced by Code Compression
+L36=EEPROM usage: 48 byte(s), 9.4% of EEPROM
+L37=Program size: 4059 words (8118 bytes), 49.5% of FLASH
+L38=575 words (1150 bytes), 12.4% reduced by Code Compression
 L39=543 words (1086 bytes), 15.3% reduced by Code Compression
 [BuildInfoAssembler]
 Lines=10
@@ -302,9 +302,9 @@ L3=
 L4=ATmega16 memory use summary [bytes]:
 L5=Segment   Begin    End      Code   Data   Used    Size   Use%
 L6=---------------------------------------------------------------
-L7=[.cseg] 0x000000 0x001e48   7142    610   7752   16384  47.3%
+L7=[.cseg] 0x000000 0x001fb6   7502    616   8118   16384  49.5%
 L8=[.dseg] 0x000060 0x0001ba      0     90     90    1024   8.8%
-L9=[.eseg] 0x000000 0x00002f      0     47     47     512   9.2%
+L9=[.eseg] 0x000000 0x000030      0     48     48     512   9.4%
 L10=
 L11=[.eseg] 0x000000 0x000000      0      0      0     512   0.0%
 L12=
