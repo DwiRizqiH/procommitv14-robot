@@ -7,8 +7,7 @@ void test_motor(void);
 void test_tombol(void);
 void map_select(int map_num);
 void sens_warna(void);
-// void tepuk_tangan(void);
-void test_capit(void);
+void test_servo(void);
 void changeMenu(int menuSelect, bool isSelect) {
     lampu = 0;
     count_btn = menuSelect;
@@ -59,10 +58,10 @@ void changeMenu(int menuSelect, bool isSelect) {
             lcd_gotoxy(0, 1);
             lcd_putsf("Button");
             break;
-        case 8: // Test Capit
-            if(isSelect) { test_capit(); break; }
+        case 8: // Test Servo
+            if(isSelect) { test_servo(); break; }
             lcd_gotoxy(0, 1);
-            lcd_putsf("Capit");
+            lcd_putsf("Servo");
             break;
     
         default:
@@ -77,10 +76,11 @@ void runBot() {
         lcd_putsf("Run Bot");
         lcd_gotoxy(0, 1);
         lcd_putsf("Click 2 to start");
+        close_tabung;
         isChildSelect = true;
     } else if(isChildSelect) {
         lcd_clear();
-        lcd_gotoxy(0, 1);
+        lcd_gotoxy(0, 0);
         lcd_putsf("Running...");
 
         Program_Jalan();
@@ -205,13 +205,11 @@ void sens_warna()
     lcd_putsf("Warna:");
 
     isTestTombol = true;
-    bawah_lepas();
     delay(200);
-    ambil(20);
     while (1)
     {
         bacawarna();
-        if (!isTestTombol) { lcd_clear(); capit_lepas; changeMenu(0, false); break; }
+        if (!isTestTombol) { lcd_clear(); changeMenu(0, false); break; }
         if ((t1 == 0))
         {
             lcd_gotoxy(0, 0);
@@ -224,52 +222,35 @@ void sens_warna()
     
 }
 
-void test_capit()
-{
-    lcd_clear();
-    lcd_gotoxy(0, 0);
-    lcd_putsf("Test Capit");
-
-    lcd_gotoxy(0, 1);
-    lcd_putsf("Capit: > <");
-    capit_ambil;
-    delay(500);
-
-    lcd_gotoxy(0, 1);
-    lcd_putsf("Capit: < >");
-    capit_lepas;
-    delay(1000);
-    
-    lcd_gotoxy(0, 1);
-    lcd_putsf("Capit: \\/");
-    lengan_bawah;
-    delay(1000);
-
-    lcd_gotoxy(0, 1);
-    lcd_putsf("Capit: /\\");
-    lengan_atas;
-    delay(1000);
-}
-
-void tepuk_tangan() {
-
+void test_servo() {
     lcd_clear();
     lcd_gotoxy(0, 1);
     lcd_putsf("Hold 1 to exit");
 
-    lcd_gotoxy(0, 0);
     while (1)
     {
-        lcd_putsf("XD");
-        if(t1 == 0) break;
-        capit_lepas;
-        if(t1 == 0) break;
-        delay(500);
-        if(t1 == 0) break;
-        capit_ambil;
-        if(t1 == 0) break;
-        delay(500);
-        if(t1 == 0) break;
+        if(t1 == 0) {
+            kunci_bola;
+            break;
+        }
+        lcd_gotoxy(0, 0);
+        lcd_putsf("Servo 1 Kunci");
+        kunci_bola;
+        delay(310);
+
+        if(t1 == 0) {
+            kunci_bola;
+            break;
+        }
+        lcd_gotoxy(0, 0);
+        lcd_putsf("Servo 1 Lepas");
+        lepas_bola;
+        delay(310);
+
+        if(t1 == 0) {
+            kunci_bola;
+            break;
+        }
     }
 }
 
@@ -294,20 +275,20 @@ void display_checkpoint() {
     else lcd_putsf("R");
 }
 
-void tes_sensor()
-{
-    for (i = 0; i < 7; i++)
-    {
-        lcd_gotoxy(0, 0);
-        sprintf(buff, "sensor:%d = %d  ", i, read_adc(i));
-        lcd_puts(buff);
-        delay_ms(100);
-    }
-}
+// void tes_sensor()
+// {
+//     for (i = 0; i < 7; i++)
+//     {
+//         lcd_gotoxy(0, 0);
+//         sprintf(buff, "sensor:%d = %d  ", i, read_adc(i));
+//         lcd_puts(buff);
+//         delay_ms(100);
+//     }
+// }
 
-void tampil_count()
-{
-    lcd_gotoxy(0, 0);
-    sprintf(buff, " %d  ", second);
-    lcd_puts(buff);
-}
+// void tampil_count()
+// {
+//     lcd_gotoxy(0, 0);
+//     sprintf(buff, " %d  ", second);
+//     lcd_puts(buff);
+// }

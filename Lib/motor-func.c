@@ -1,5 +1,5 @@
 // motor
-void maju(unsigned char ki, unsigned char ka)
+void maju(int ki, int ka)
 {
     pwmka = ka;
     pwmki = ki;
@@ -13,7 +13,7 @@ void maju(unsigned char ki, unsigned char ka)
     PORTD.7 = 1;
 }
 
-void mundur(unsigned char ki, unsigned char ka)
+void mundur(int ki, int ka)
 {
     pwmka = ka;
     pwmki = ki;
@@ -27,7 +27,7 @@ void mundur(unsigned char ki, unsigned char ka)
     PORTD.7 = 0;
 }
 
-void kanan(unsigned char ki, unsigned char ka)
+void kanan(int ki, int ka)
 {
     pwmka = ka;
     pwmki = ki;
@@ -41,7 +41,7 @@ void kanan(unsigned char ki, unsigned char ka)
     PORTD.7 = 1;
 }
 
-void kiri(unsigned char ki, unsigned char ka)
+void kiri(int ki, int ka)
 {
     pwmka = ka;
     pwmki = ki;
@@ -140,7 +140,28 @@ void belki(int kec, int lama)
         kiri(kec, kec);
         cek_sensor();
     }
+    cek_sensor();
     while (!sen[0] && !sen[1])
+    {
+        kiri(kec, kec);
+        cek_sensor();
+    }
+
+    if (lama > 0)
+    {
+        rem(lama);
+    }
+}
+void belkicenter(int kec, int lama)
+{
+    cek_sensor();
+    while (sen[1] || sen[2])
+    {
+        kiri(kec, kec);
+        cek_sensor();
+    }
+    cek_sensor();
+    while (!sen[1] && !sen[2])
     {
         kiri(kec, kec);
         cek_sensor();
@@ -171,6 +192,7 @@ void belka(int kec, int lama)
         kanan(kec, kec);
         cek_sensor();
     }
+    cek_sensor();
     while (!sen[5] && !sen[6])
     {
         kanan(kec, kec);
@@ -181,15 +203,23 @@ void belka(int kec, int lama)
         rem(lama);
     }
 }
-void belkacenter()
+void belkacenter(int kec, int lama)
 {
     cek_sensor();
-    while ((sensor & 0b00001000) != 0b00001000)
+    while (sen[4] || sen[5])
     {
+        kanan(kec, kec);
         cek_sensor();
-        kanan(180, 180);
-        if ((sensor & 0b10000000) == 0b10000000)
-            lcd_kedip(1);
+    }
+    cek_sensor();
+    while (!sen[4] && !sen[5])
+    {
+        kanan(kec, kec);
+        cek_sensor();
+    }
+    if (lama > 0)
+    {
+        rem(lama);
     }
 }
 
@@ -213,10 +243,24 @@ void belokKanan(int kec, int lama_rem) {
         belki(kec, lama_rem);
     }
 }
+void belokKananCenter(int kec, int lama_rem) {
+    if(mapMirror == map_merah) {
+        belkacenter(kec, lama_rem);
+    } else {
+        belkacenter(kec, lama_rem);
+    }
+}
 void belokKiri(int kec, int lama_rem) {
     if(mapMirror == map_merah) {
         belki(kec, lama_rem);
     } else {
         belka(kec, lama_rem);
+    }
+}
+void belokKiriCenter(int kec, int lama_rem) {
+    if(mapMirror == map_merah) {
+        belkicenter(kec, lama_rem);
+    } else {
+        belkicenter(kec, lama_rem);
     }
 }

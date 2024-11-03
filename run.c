@@ -6,10 +6,19 @@ void fromReloadToB();
 void fromReloadToZ();
 void fromAToReload();
 void fromBToReload();
+void balikKanan();
+void balikKiri();
+void balikKananCenter();
+void balikKiriCenter();
+void changePosLcd();
 void Program_Jalan() {
+    lcd_gotoxy(0, 1);
+    lcd_putsf("Position: ");
+    changePosLcd();
+
     if(startPos == 'H') {
-        maju_delay(2000, 400);
-        scanX(1, 3000); belokKiri(3000, 0); mundur(3000, 3000); delay(50); rem(100);
+        maju_delay(2000, 300);
+        scanX(1, 3000); belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(100);
     }
 
     if(pointPos == 'A') fromReloadToA();
@@ -17,82 +26,75 @@ void Program_Jalan() {
     else if(pointPos == 'Z') fromReloadToZ();
 
     if((pointPos == 'A') || (pointPos == 'B')) {
-        if(pointPos == 'B' && startPos == 'R') {
-            if(ringPos == 1 || ringPos == 2) {
-                belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-            } else {
-                belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-            }
-
-            if(ringPos == 1) scanX(3, 2000);
-            else if(ringPos == 2) scanX(1, 2000);
-            else if(ringPos == 3) scanX(1, 2000);
-        } else {
-            if(ringPos == 1) scanX(5, 2000);
-            else if(ringPos == 2) scanX(3, 2000);
-            else if(ringPos == 3) scanX(1, 2000);
+        if(ringPos == 1) {
+            scanX(4, 2000);
+            scanX(1, 2500);
+            rem(750);
+        } else if(ringPos == 2) {
+            scanX(2, 2000);
+            scanX(1, 2500);
+            rem(750);
+        } else if(ringPos == 3) {
+            scanX(1, 2500);
+            rem(750);
         }
 
         // check warna / 0 = putih / 1 = orange
-        // simulate 1
-        // isWarna = checkWarna();
-        isWarna = 1;
+        isWarna = checkWarna();
 
         // to ring
         if(isWarna == 0) {
-            if(pointPos == 'B' && startPos == 'R' && ringPos == 3) {
-                belokKanan(3500, 0);
-            } else {
-                belokKiri(3500, 0);
-            }
-            scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
+            belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
+            scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
         } else if(isWarna == 1) {
-            if(pointPos == 'B' && startPos == 'R' && ringPos == 3) {
-                belokKiri(3500, 0);
-            } else {
-                belokKanan(3500, 0);
-            }
-            scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
+            belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
+            scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
         }
 
 
 
         // servo stuff
-
-
+        taruh_bola();
+        delay(200);
 
         // back position
-        mundur(3000, 3000); delay(350);
+        mundur(3000, 3000); delay(400);
         if(isWarna == 0) { 
-            belokKiri(3500, 200);
+            belokKiriCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
         } else if(isWarna == 1) {
-            belokKanan(3500, 200);
+            belokKananCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
         }
 
         while (ringPos < 3) {
             ringPos++;
-            scanX(2, 2000);
+            changePosLcd();
+
+            scanX(2, 2500);
 
             // Check warna / 0 = putih / 1 = orange
-            // Simulate 0 for testing
-            // isWarna = checkWarna();
-            isWarna = 0;
+            // mundur(2300, 2300); delay(50); rem(300);
+            rem(750);
+            isWarna = checkWarna();
 
-            // To Reload
+            // To Ring
             if (isWarna == 0) {
-                belokKanan(3500, 0);
-                scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
+                belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
+                scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
             } else if (isWarna == 1) {
-                belokKiri(3500, 0);
-                scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
+                belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
+                scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
             }
 
+            // servo stuff
+            taruh_bola();
+            delay(200);
+
             // Back position
-            mundur(3000, 3000); delay(350);
+            mundur(3000, 3000); delay(400);
             if (isWarna == 0) {
-                belokKiri(3500, 200);
+                belokKiriCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
             } else if (isWarna == 1) {
-                belokKanan(3500, 200);
+                belokKananCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
             }
         }
 
@@ -101,61 +103,94 @@ void Program_Jalan() {
         else if(ringPos == 3) scanX(1, 2000);
 
         belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-        if((pointPos == 'A')) fromAToReload();
-        else if((pointPos == 'B')) fromBToReload();
+        if((pointPos == 'A')) {
+            fromAToReload();
+            open_tabung;
+            delay(10000);
+            close_tabung;
+
+            Program_Jalan();
+        } else if((pointPos == 'B')) {
+            fromBToReload();
+            open_tabung;
+            delay(10000);
+            close_tabung;
+
+            Program_Jalan();
+        }
     }
     else if(pointPos == 'Z') {
         // servo stuff
+        taruh_bola();
+        delay(200);
 
 
         mundur(3000, 3000); delay(200);
-        belokKanan(3500, 200);
-        scanX(1, 2000);
+        belokKananCenter(3500, 200);
+        scanX(1, 2500);
         
-        belokKiri(2000, 0); scanX(2, 2000); maju_delay(2000, 100); mundur(2000, 2000); delay(50); rem(200);
+        belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+        scanX(2, 2000); maju_delay(2000, 100); mundur(2000, 2000); delay(50); rem(200);
     }
-
 }
 
 void fromReloadToA() {
-    scanX(5, 2000); belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
+    scanX(4, 2000); scanX(1, 2500);
+    belokKanan(2500, 0); mundur(2500, 2500); delay(50); rem(200);
 }
 void fromReloadToB() {
-    if(startPos == 'H') {
-        scanX(2, 2000); belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-    } else {
-        belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(200);
-        scanX(1, 3000);
-        
-        belokKiri(2500, 0);
-        scanX(2, 2000);
+    if(startPos == 'R') {
+        balikKiriCenter();
     }
+    scanX(2, 2500);
+    belokKanan(2500, 0); mundur(2500, 2500); delay(50); rem(200);
 }
 void fromReloadToZ() {
-    belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+    belokKiri(3500, 0); mundur(3500, 3500); delay(50); rem(200);
 
-    scanX(1, 3000); belokKanan(2500, 0); mundur(2500, 2500); delay(50); rem(200);
-    scanKotak(1, 2000, 0); mundur(2000, 2000); delay(50); rem(200);
+    scanX(1, 3000); belokKanan(2500, 0);
+    scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
 }
 
 void fromAToReload() {
     scanX(5, 2000);
-    mundur(2100, 2100); delay(50); rem(200);
+    mundur(1500, 1500); delay(50); rem(200);
 
     startPos = 'R';
+
+    pointPos = 'B';
+    ringPos = 1;
+
+    changePosLcd();
 }
 void fromBToReload() {
     scanX(2, 2000);
-    mundur(2100, 2100); delay(50); rem(200);
+    mundur(1500, 1500); delay(50); rem(200);
 
     startPos = 'R';
+
+    pointPos = 'Z';
+    ringPos = 4;
+
+    changePosLcd();
 }
 
 void balikKanan() {
-    mundur(1000, 1000); delay(380);
-    belokKanan(1200, 0); belokKanan(1200, 100);
+    belokKanan(3500, 200); belokKanan(3500, 200);
+}
+void balikKananCenter() {
+    belokKananCenter(3500, 0); belokKananCenter(3500, 200);
 }
 
 void balikKiri() {
-    belki(1000, 50); belki(1000, 200);
+    belokKiri(3500, 0); belokKiri(3500, 200);
+}
+void balikKiriCenter() {
+    belokKiriCenter(3500, 0); belokKiriCenter(3500, 200);
+}
+
+void changePosLcd() {
+    lcd_gotoxy(10, 1);
+    sprintf(buff, "%c %c%d", startPos, pointPos, ringPos);
+    lcd_puts(buff);
 }

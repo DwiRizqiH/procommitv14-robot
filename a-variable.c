@@ -1,14 +1,11 @@
 
-int positionD = 0;
 eeprom int mapMirror; // 1 - map/lintasan bagian biru, 0 - map/lintasan bagian merah
-eeprom char startPos; // H - home, R - Reload
-eeprom char pointPos;
-eeprom int ringPos;
+char startPos; // H - home, R - Reload
+char pointPos;
+int ringPos;
 
-int maxHijau = 220;
-int maxKuning = 80;
-int maxMerah = 165;
+int maxPutih = 89;
+int maxOrange = 200;
 
-int minHijau = 170;
-int minKuning = 5;
-int minMerah = 85;
+int minPutih = 0;
+int minOrange = 90;
