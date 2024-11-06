@@ -29,26 +29,26 @@ void Program_Jalan() {
         if(ringPos == 1) {
             scanX(4, 2000);
             scanX(1, 2500);
-            rem(750);
+            mundur(2750, 2750); delay(50); rem(700);
         } else if(ringPos == 2) {
             scanX(2, 2000);
             scanX(1, 2500);
-            rem(750);
+            mundur(2750, 2750); delay(50); rem(700);
         } else if(ringPos == 3) {
             scanX(1, 2500);
-            rem(750);
+            mundur(2750, 2750); delay(50); rem(700);
         }
 
         // check warna / 0 = putih / 1 = orange
-        isWarna = checkWarna();
+        isWarna = checkWarna(true);
 
         // to ring
         if(isWarna == 0) {
-            belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-            scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
+            belokKiri(2500, 0); rem(200);
+            scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
         } else if(isWarna == 1) {
-            belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-            scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
+            belokKanan(2500, 0); rem(200);
+            scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
         }
 
 
@@ -60,29 +60,28 @@ void Program_Jalan() {
         // back position
         mundur(3000, 3000); delay(400);
         if(isWarna == 0) { 
-            belokKiriCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+            belokKiri(3000, 0); mundur(3000, 3000); delay(50); rem(200);
         } else if(isWarna == 1) {
-            belokKananCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+            belokKanan(3000, 0); mundur(3000, 3000); delay(50); rem(200);
         }
 
         while (ringPos < 3) {
             ringPos++;
             changePosLcd();
 
-            scanX(2, 2500);
+            scanX(2, 3500);
 
             // Check warna / 0 = putih / 1 = orange
-            // mundur(2300, 2300); delay(50); rem(300);
-            rem(750);
-            isWarna = checkWarna();
+            delay(130); rem(650);
+            isWarna = checkWarna(true);
 
             // To Ring
             if (isWarna == 0) {
-                belokKanan(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-                scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
+                belokKanan(2500, 0); rem(200);
+                scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
             } else if (isWarna == 1) {
-                belokKiri(2000, 0); mundur(2000, 2000); delay(50); rem(200);
-                scanX(1, 2500); mundur(2500, 2500); delay(50); rem(200);
+                belokKiri(2500, 0); rem(200);
+                scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
             }
 
             // servo stuff
@@ -92,9 +91,9 @@ void Program_Jalan() {
             // Back position
             mundur(3000, 3000); delay(400);
             if (isWarna == 0) {
-                belokKiriCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+                belokKiri(3000, 0); mundur(3000, 3000); delay(50); rem(200);
             } else if (isWarna == 1) {
-                belokKananCenter(2500, 0); mundur(2500, 2500); delay(50); rem(200);
+                belokKanan(3000, 0); mundur(3000, 3000); delay(50); rem(200);
             }
         }
 
@@ -140,13 +139,14 @@ void fromReloadToA() {
 }
 void fromReloadToB() {
     if(startPos == 'R') {
-        balikKiriCenter();
+        mundur(3000, 3000); delay(400);
+        belokKiri(3000, 200);
     }
     scanX(2, 2500);
     belokKanan(2500, 0); mundur(2500, 2500); delay(50); rem(200);
 }
 void fromReloadToZ() {
-    belokKiri(3500, 0); mundur(3500, 3500); delay(50); rem(200);
+    belokKiri(2300, 0); mundur(2300, 2300); delay(50); rem(200);
 
     scanX(1, 3000); belokKanan(2500, 0);
     scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
@@ -179,14 +179,14 @@ void balikKanan() {
     belokKanan(3500, 200); belokKanan(3500, 200);
 }
 void balikKananCenter() {
-    belokKananCenter(3500, 0); belokKananCenter(3500, 200);
+    belokKananCenter(2500, 0); belokKananCenter(2500, 200);
 }
 
 void balikKiri() {
     belokKiri(3500, 0); belokKiri(3500, 200);
 }
 void balikKiriCenter() {
-    belokKiriCenter(3500, 0); belokKiriCenter(3500, 200);
+    belokKiriCenter(2300, 0); belokKiriCenter(2300, 200);
 }
 
 void changePosLcd() {

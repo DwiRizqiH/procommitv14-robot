@@ -29,8 +29,8 @@
 #define         lepas_bola      pos_servo1=230;
 #define         kunci_bola      pos_servo1=237;
 
-#define         open_tabung     pos_servo2=230;
-#define         close_tabung    pos_servo2=237;
+#define         open_tabung     pos_servo2=237;
+#define         close_tabung    pos_servo2=230;
 
 #define         map_biru        1
 #define         map_merah       0  
@@ -75,7 +75,7 @@ int sensor;
 //-----------PID--------------//
 int error = 0;
 int lastError = 0;
-int kp = 17;
+int kp = 15;
 int kd = 100;
 int SPEED = 200;
 int MIN_SPEED = -160;

@@ -236,7 +236,8 @@ void test_servo() {
         lcd_gotoxy(0, 0);
         lcd_putsf("Servo 1 Kunci");
         kunci_bola;
-        delay(310);
+        close_tabung;
+        delay(250);
 
         if(t1 == 0) {
             kunci_bola;
@@ -245,7 +246,8 @@ void test_servo() {
         lcd_gotoxy(0, 0);
         lcd_putsf("Servo 1 Lepas");
         lepas_bola;
-        delay(310);
+        open_tabung;
+        delay(250);
 
         if(t1 == 0) {
             kunci_bola;

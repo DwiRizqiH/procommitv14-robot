@@ -247,7 +247,7 @@ void belokKananCenter(int kec, int lama_rem) {
     if(mapMirror == map_merah) {
         belkacenter(kec, lama_rem);
     } else {
-        belkacenter(kec, lama_rem);
+        belkicenter(kec, lama_rem);
     }
 }
 void belokKiri(int kec, int lama_rem) {
@@ -261,6 +261,6 @@ void belokKiriCenter(int kec, int lama_rem) {
     if(mapMirror == map_merah) {
         belkicenter(kec, lama_rem);
     } else {
-        belkicenter(kec, lama_rem);
+        belkacenter(kec, lama_rem);
     }
 }
