@@ -4,8 +4,8 @@ char startPos; // H - home, R - Reload
 char pointPos;
 int ringPos;
 
-int maxPutih = 65;
+int maxPutih = 80;
 int maxOrange = 200;
 
 int minPutih = 0;
-int minOrange = 90;
+int minOrange = 80;

@@ -199,16 +199,27 @@ void sens_warna()
 {
     lcd_clear();
     lcd_gotoxy(0, 0);
-    lcd_putsf("Warna");
-
-    lcd_gotoxy(0, 1);
     lcd_putsf("Warna:");
 
     isTestTombol = true;
     delay(200);
     while (1)
     {
-        bacawarna();
+        int sensWarnaCheck = checkWarna(false);
+        lcd_gotoxy(13, 1);
+        sprintf(buff, "%d   ", nadc7);
+        lcd_puts(buff);
+
+        lcd_gotoxy(0, 1);
+        if(sensWarnaCheck == 1) {
+            lcd_putsf("Orange");
+        } else {
+            lcd_putsf("Putih ");
+        }
+        lcd_gotoxy(8, 1);
+        sprintf(buff, "%d   ", sensWarnaCheck);
+        lcd_puts(buff);
+        
         if (!isTestTombol) { lcd_clear(); changeMenu(0, false); break; }
         if ((t1 == 0))
         {
@@ -237,20 +248,22 @@ void test_servo() {
         lcd_putsf("Servo 1 Kunci");
         kunci_bola;
         close_tabung;
-        delay(250);
+        delay(260);
 
         if(t1 == 0) {
             kunci_bola;
+            open_tabung;
             break;
         }
         lcd_gotoxy(0, 0);
         lcd_putsf("Servo 1 Lepas");
         lepas_bola;
         open_tabung;
-        delay(250);
+        delay(260);
 
         if(t1 == 0) {
             kunci_bola;
+            open_tabung;
             break;
         }
     }

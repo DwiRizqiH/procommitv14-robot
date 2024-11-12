@@ -18,7 +18,11 @@ void Program_Jalan() {
 
     if(startPos == 'H') {
         maju_delay(2000, 300);
-        scanX(1, 3000); belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(100);
+        scanX(1, 3000);
+
+        if(pointPos != 'Z') {
+            belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(100);
+        }
     }
 
     if(pointPos == 'A') fromReloadToA();
@@ -125,7 +129,7 @@ void Program_Jalan() {
 
 
         mundur(3000, 3000); delay(200);
-        belokKananCenter(3500, 200);
+        belokKanan(3000, 200);
         scanX(1, 2500);
         
         belokKiri(2500, 0); mundur(2500, 2500); delay(50); rem(200);
@@ -146,7 +150,9 @@ void fromReloadToB() {
     belokKanan(2500, 0); mundur(2500, 2500); delay(50); rem(200);
 }
 void fromReloadToZ() {
-    belokKiri(2300, 0); mundur(2300, 2300); delay(50); rem(200);
+    if(startPos != 'H') {
+        belokKiri(2300, 0); mundur(2300, 2300); delay(50); rem(200);
+    }
 
     scanX(1, 3000); belokKanan(2500, 0);
     scanX(1, 3500); mundur(3500, 3500); delay(50); rem(200);
