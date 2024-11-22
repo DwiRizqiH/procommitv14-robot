@@ -26,7 +26,7 @@
 // #define         lengan_atas     pos_servo2=234; //
 // #define         capit_lepas     pos_servo1=230;
 // #define         capit_ambil     pos_servo1=237;
-#define         lepas_bola      pos_servo1=230;
+#define         lepas_bola      pos_servo1=245;
 #define         kunci_bola      pos_servo1=237;
 
 #define         open_tabung     pos_servo2=237;
@@ -345,7 +345,7 @@ void main(void)
         if((t1 == 0)) {
 
             if(!isChildSelect) count_btn ++;
-            if(count_btn >= 9) count_btn = 0;
+            if(count_btn >= 10) count_btn = 0;
             delay(200);
             changeMenu(count_btn, false);
         }

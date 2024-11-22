@@ -3,6 +3,7 @@ void runBot(void);
 void calibration(void);
 void change_startPos(void);
 void Program_Jalan(void);
+void test_Program_Jalan(void);
 void test_motor(void);
 void test_tombol(void);
 void map_select(int map_num);
@@ -63,7 +64,11 @@ void changeMenu(int menuSelect, bool isSelect) {
             lcd_gotoxy(0, 1);
             lcd_putsf("Servo");
             break;
-    
+        case 9: // unit test
+            if(isSelect) { test_Program_Jalan(); break; }
+            lcd_gotoxy(0, 1);
+            lcd_putsf("Test Unit");
+            break;
         default:
             break;
     }
@@ -248,7 +253,7 @@ void test_servo() {
         lcd_putsf("Servo 1 Kunci");
         kunci_bola;
         close_tabung;
-        delay(260);
+        delay(220);
 
         if(t1 == 0) {
             kunci_bola;
@@ -259,7 +264,7 @@ void test_servo() {
         lcd_putsf("Servo 1 Lepas");
         lepas_bola;
         open_tabung;
-        delay(260);
+        delay(230);
 
         if(t1 == 0) {
             kunci_bola;

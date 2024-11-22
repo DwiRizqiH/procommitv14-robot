@@ -77,6 +77,97 @@ void scan(int kec)
     setMotor(moveLeft, moveRight);
 }
 
+void scanMundur(int kec)
+{
+    int rateError;
+    int moveVal, moveLeft, moveRight;
+
+    cek_sensor();
+    pilihSpeedReverse(kec);  // Use reverse speed configuration
+    sensor = sensor & 0b01111111;
+    switch (sensor) //  1=kiri 8=kanan (but reversed since moving backward)
+    {               //  7......1
+    case 0b00000001:
+        error = 6;
+        break; 
+    case 0b00000011:
+        error = 5;
+        break;
+    case 0b00000010:
+        error = 4;
+        break;
+    case 0b00000110:
+        error = 3;
+        break;
+    case 0b00000100:
+        error = 2;
+        break;
+    case 0b00001100:
+        error = 1;
+        break;
+    case 0b00001000:
+        error = 0;
+        break;
+    case 0b00011000:
+        error = -1;
+        break;
+    case 0b00010000:
+        error = -2;
+        break;
+    case 0b00110000:
+        error = -3;
+        break;
+    case 0b00100000:
+        error = -4;
+        break;
+    case 0b01100000:
+        error = -5;
+        break;
+    case 0b01000000:
+        error = -6;
+        break;
+    default:
+        error = lastError;
+        break;
+    }
+    rateError = error - lastError;
+    lastError = error;
+
+    moveVal = (int)(error * kp) + (rateError * kd);
+
+    // Since SPEED is already negative, we don't need to add negative signs here
+    moveLeft = SPEED + moveVal;
+    moveRight = SPEED - moveVal;
+
+    if (moveLeft > MAX_SPEED)
+    {
+        moveLeft = MAX_SPEED;
+    }
+    if (moveLeft < MIN_SPEED)
+    {
+        moveLeft = MIN_SPEED;
+    }
+
+    if (moveRight > MAX_SPEED)
+    {
+        moveRight = MAX_SPEED;
+    }
+    if (moveRight < MIN_SPEED)
+    {
+        moveRight = MIN_SPEED;
+    }
+
+    // display at LCD right side
+    lcd_gotoxy(11, 0);
+    sprintf(buff, "%d", moveLeft);
+    lcd_puts(buff);
+    lcd_gotoxy(11, 1);
+    sprintf(buff, "%d", moveRight);
+    lcd_puts(buff);
+
+    setMotor(moveLeft, moveRight);
+}
+
 /// @brief Scan Garis Perempatan
 /// @param brpkali - berapa kali scan/perempatan dilewati
 /// @param kec - kecepatan motor 
@@ -106,6 +197,33 @@ void scanX(int brpkali, int kec)
   };
   hitung = 0;
   // rem(lama);
+}
+
+// Function to scan reverse through intersections
+void scanXMundur(int brpkali, int kec)
+{
+  while (hitung < brpkali)
+  {
+    while ((sensor & 0b00011100) != 0b00011100)
+    {
+      cek_sensor();
+      scanMundur(kec);
+    }
+
+    while ((sensor & 0b00011100) == 0b00011100)
+    {
+      cek_sensor();
+      lampu = 0;
+
+      scanMundur(kec);
+      if ((sensor & 0b00011100) != 0b00011100)
+      {
+        hitung++;
+        lampu = 1;
+      };
+    }
+  };
+  hitung = 0;
 }
 
 void scanTimer(int countGoal, int kec, int lama)

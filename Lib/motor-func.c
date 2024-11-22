@@ -1,3 +1,5 @@
+int unusedPwm[99] = {0};
+
 // motor
 void maju(int ki, int ka)
 {
@@ -106,6 +108,29 @@ void pilihSpeed(int kec)
     SPEED = kec;
     MIN_SPEED = -(kec * 0.75);
     MAX_SPEED = kec;
+}
+
+void pilihSpeedReverse(int kec)
+{
+    // May need to adjust these multipliers for reverse movement
+    kp = kec * 0.15;     // Could keep same as forward
+    kd = kec * 0.6;      // Could keep same as forward
+    SPEED = -kec;        // Negative since moving backwards
+    MIN_SPEED = -(kec);  // Full negative speed as max reverse
+    MAX_SPEED = kec * 0.75;  // Limit forward correction when reversing
+
+    // go to left side lcd
+    lcd_gotoxy(0, 0);
+    sprintf(buff, "%d", MIN_SPEED);
+    lcd_puts(buff);
+    lcd_gotoxy(0, 1);
+    sprintf(buff, "%d", MAX_SPEED);
+    lcd_puts(buff);
+
+    //  go to center lcd
+    lcd_gotoxy(6, 0);
+    sprintf(buff, "%d", SPEED);
+    lcd_puts(buff);
 }
 
 void maju_cari_garis()
