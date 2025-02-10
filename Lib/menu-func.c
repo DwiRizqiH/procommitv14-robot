@@ -65,9 +65,15 @@ void changeMenu(int menuSelect, bool isSelect) {
             lcd_putsf("Servo");
             break;
         case 9: // unit test
-            if(isSelect) { test_Program_Jalan(); break; }
+            if(isSelect) { 
+                
+                isFromRetry = true;
+                isChildSelect = false;
+                changeMenu(0, false); 
+                break; 
+            }
             lcd_gotoxy(0, 1);
-            lcd_putsf("Test Unit");
+            lcd_putsf("Retry");
             break;
         default:
             break;
